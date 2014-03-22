@@ -4,7 +4,7 @@ Donate link: https://www.siteguarding.com/en/website-extensions
 Tags: extra password, graphic password, two-factor, authentication, access, security, login, login alerts, login security, personal security, security plugin, users, website security, admin security, admin, ban hacker, front-end security, wordpress security, login notification, email notification, email alerts, user alert, user notification, log 
 Requires at least: 3.0
 Tested up to: 3.8.1 
-Stable tag: 1.1
+Stable tag: 1.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -51,9 +51,6 @@ A: If you care about security of your website or your password was stolen before
 
 = Q: Will WP Admin Graphic Password plugin slow my site down? =
 A: Absolutely No.
-
-= Q: Do you provide free support for your plugin? =
-A: Yes. Our contacts are there https://www.siteguarding.com/en/contacts
 
 
 

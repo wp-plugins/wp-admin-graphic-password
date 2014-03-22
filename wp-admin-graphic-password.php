@@ -15,8 +15,6 @@ DEFINE( 'plgwpagp_PLUGIN_URL', trailingslashit( WP_PLUGIN_URL ) . basename( dirn
 
 
 
-error_reporting(0);
-
 if( !is_admin() ) {
 
 	function plgwpagp_login_form_add_field()
@@ -125,7 +123,7 @@ if( is_admin() ) {
 		$domain = get_site_url();
 		$image_url = plugins_url('images/', __FILE__);
 				
-		if ($_POST['action'] == 'update')
+		if ($_POST['action'] == 'update' && check_admin_referer( 'my-custom-nonce-name' ))
 		{
 			$params = array(
 				'image_num' => $_POST['image_num'],
@@ -182,7 +180,7 @@ function SG_CheckForm(form)
 					<?php
 				}
 				?>
-	            <input type="hidden" name="image_num" id="image_num" value="<?php echo $params['image_num']; ?>">
+	            <input type="hidden" name="image_num" id="image_num" value="<?php echo esc_attr($params['image_num']); ?>">
 			</td>
 			</tr>
 			
@@ -201,7 +199,10 @@ function SG_CheckForm(form)
 			</tr>
 			<?php ?>
 			</table>
-			
+
+<?php
+wp_nonce_field( 'my-custom-nonce-name' );
+?>			
 <p class="submit">
   <input type="submit" name="submit" id="submit" class="button button-primary" value="Save Changes">
 </p>
@@ -349,7 +350,7 @@ function SG_PrintCells($params)
 	
 	</script>
 	<p><a style="margin-top:5px" class="button" href="javascript:;" onclick="SG_Refresh()">Clear</a></p>
-	<input type="hidden" value="<?php echo $params['sg_code']; ?>" name="sg_code" id="sg_code"/>
+	<input type="hidden" value="<?php echo esc_attr($params['sg_code']); ?>" name="sg_code" id="sg_code"/>
 	
 	<?php
 }
