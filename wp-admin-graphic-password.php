@@ -11,9 +11,6 @@ TextDomain: plgwpagp
 */
 
 
-DEFINE( 'plgwpagp_PLUGIN_URL', trailingslashit( WP_PLUGIN_URL ) . basename( dirname( __FILE__ ) ) );
-
-
 
 if( !is_admin() ) {
 
@@ -123,7 +120,7 @@ if( is_admin() ) {
 		$domain = get_site_url();
 		$image_url = plugins_url('images/', __FILE__);
 				
-		if ($_POST['action'] == 'update' && check_admin_referer( 'my-custom-nonce-name' ))
+		if ($_POST['action'] == 'update' && check_admin_referer( 'name_254f4bd3ea8d' ))
 		{
 			$params = array(
 				'image_num' => $_POST['image_num'],
@@ -201,7 +198,7 @@ function SG_CheckForm(form)
 			</table>
 
 <?php
-wp_nonce_field( 'my-custom-nonce-name' );
+wp_nonce_field( 'name_254f4bd3ea8d' );
 ?>			
 <p class="submit">
   <input type="submit" name="submit" id="submit" class="button button-primary" value="Save Changes">
