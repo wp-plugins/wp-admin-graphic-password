@@ -11,20 +11,18 @@ TextDomain: plgwpagp
 */
 
 
-error_reporting(E_ERROR | E_WARNING);
-
 if( !is_admin() ) {
 
 	function plgwpagp_login_form_add_field()
 	{
 		global $wpdb, $_SERVER;
 		
-		$domain = get_site_url();
+		$b = get_site_url();
         
-		        $params = wpagp_GetExtraParams(1);
-        if (strlen(trim($params['sg_code'])) > 0)
+		        $c = wpagp_GetExtraParams(1);
+        if (strlen(trim($c['sg_code'])) > 0)
         {
-	        unset($params['sg_code']);
+	        unset($c['sg_code']);
 	        	        ?>
 	        <style>.login_wide {width: 550px!important;}#loginform{position: relative!important;}</style>
 	        <script>
@@ -63,7 +61,7 @@ if( !is_admin() ) {
 			<a style="top: 2px; position: absolute; right: 2px;" href="javascript:;" onclick="SG_ShowImage()"><img width="32" height="32" src="data:image/png;base64,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"/></a>
 	        <div id="sg_password_block" style="display:none;">
 		        <?php
-		        SG_PrintCells($params);
+		        SG_PrintCells($c);
 		        
 		        ?>
 		        <div style="clear: both;height:20px;"></div>
@@ -82,20 +80,20 @@ if( !is_admin() ) {
 	add_action( 'login_head', 'plgwpagp_login_head_add_field' );
 
 
-	function plgwpagp_authenticate( $raw_user, $username )
+	function plgwpagp_authenticate( $d, $e )
 	{
                 
-        if ($raw_user->roles[0] == 'administrator')
+        if (isset($d->roles) && $d->roles[0] == 'administrator')
         {
-        	$params = wpagp_GetExtraParams(1);
-			if ( trim($params['sg_code']) != trim($_POST['sg_code']) )	
+        	$c = wpagp_GetExtraParams(1);
+			if ( trim($c['sg_code']) != trim($_POST['sg_code']) )	
 			{
     			add_action( 'login_head', 'wp_shake_js', 12 );
     			return new WP_Error( 'authentication_failed', __( '<strong>ERROR</strong>: Graphic Password is invalid.', 'plgwpagp' ) );
 			}
         }
 
-        return $raw_user;
+        return $d;
 	}
 	add_filter( 'authenticate', 'plgwpagp_authenticate', 999, 2 );
     
@@ -118,20 +116,20 @@ if( is_admin() ) {
 
 	function plgwpagp_settings_page_callback() 
 	{
-		$domain = get_site_url();
-		$image_url = plugins_url('images/', __FILE__);
+		$b = get_site_url();
+		$f = plugins_url('images/', __FILE__);
 				
-		if ($_POST['action'] == 'update' && check_admin_referer( 'name_254f4bd3ea8d' ))
+		if (isset($_POST['action']) && $_POST['action'] == 'update' && check_admin_referer( 'name_254f4bd3ea8d' ))
 		{
-			$params = array(
+			$c = array(
 				'image_num' => $_POST['image_num'],
 				'sg_code' => $_POST['sg_code']
 			);
-			wpagp_SetExtraParams(1, $params);
+			wpagp_SetExtraParams(1, $c);
 			echo '<div id="setting-error-settings_updated" class="updated settings-error"><p><strong>Settings saved.</strong></p></div>';
 
 		}
-		else $params = wpagp_GetExtraParams(1);
+		else $c = wpagp_GetExtraParams(1);
 				
 		
 		echo '<div class="wrap"><div id="icon-tools" class="icon32"></div>';
@@ -166,19 +164,19 @@ function SG_CheckForm(form)
 					jQuery(".img_thumb").removeClass('img_selected');
 					jQuery("#password_img_"+id).addClass('img_selected');
 					
-					jQuery("#sg_password_area").attr("style", "background-image:url('<?php echo $image_url.'image';?>"+id+".jpg')");
+					jQuery("#sg_password_area").attr("style", "background-image:url('<?php echo $f.'image';?>"+id+".jpg')");
 				}
 				</script>
 				<?php
 				
-				for ($i = 1; $i <= 8; $i++)
+				for ($g = 1; $g <= 8; $g++)
 				{
 					?>
-					<img onclick="SelectImg(<?php echo $i; ?>)" class="img_thumb" id="password_img_<?php echo $i; ?>" src="<?php echo $image_url.'image'.$i.'.jpg'; ?>"/>
+					<img onclick="SelectImg(<?php echo $g; ?>)" class="img_thumb <?php if ($c['image_num'] == $g) echo 'img_selected'; ?>" id="password_img_<?php echo $g; ?>" src="<?php echo $f.'image'.$g.'.jpg'; ?>"/>
 					<?php
 				}
 				?>
-	            <input type="hidden" name="image_num" id="image_num" value="<?php echo esc_attr($params['image_num']); ?>">
+	            <input type="hidden" name="image_num" id="image_num" value="<?php echo esc_attr($c['image_num']); ?>">
 			</td>
 			</tr>
 			
@@ -190,7 +188,7 @@ function SG_CheckForm(form)
 
 			<p>Click the cells to select new graphic password</p>
 
-			<?php SG_PrintCells($params); ?>
+			<?php SG_PrintCells($c); ?>
 
 
 			</td>
@@ -219,10 +217,10 @@ wp_nonce_field( 'name_254f4bd3ea8d' );
     
 	function plgwpagp_activation()
 	{
-		global $wpdb, $current_user;
-		$table_name = $wpdb->prefix . 'plgwpagp_config';
-		if( $wpdb->get_var( 'SHOW TABLES LIKE "' . $table_name .'"' ) != $table_name ) {
-			$sql = 'CREATE TABLE IF NOT EXISTS '. $table_name . ' (
+		global $wpdb, $h;
+		$j = $wpdb->prefix . 'plgwpagp_config';
+		if( $wpdb->get_var( 'SHOW TABLES LIKE "' . $j .'"' ) != $j ) {
+			$l = 'CREATE TABLE IF NOT EXISTS '. $j . ' (
                 `id` int(11) NOT NULL AUTO_INCREMENT,
                 `user_id` int(11) NOT NULL,
                 `var_name` char(255) CHARACTER SET utf8 NOT NULL,
@@ -233,7 +231,7 @@ wp_nonce_field( 'name_254f4bd3ea8d' );
             
 
 			require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-			dbDelta( $sql );             
+			dbDelta( $l );             
             		}
 	}
 	register_activation_hook( __FILE__, 'plgwpagp_activation' );
@@ -242,8 +240,8 @@ wp_nonce_field( 'name_254f4bd3ea8d' );
 	function plgwpagp_uninstall()
 	{
 		global $wpdb;
-		$table_name = $wpdb->prefix . 'plgwpagp_config';
-		$wpdb->query( 'DROP TABLE ' . $table_name );
+		$j = $wpdb->prefix . 'plgwpagp_config';
+		$wpdb->query( 'DROP TABLE ' . $j );
 	}
 	register_uninstall_hook( __FILE__, 'plgwpagp_uninstall' );
 	
@@ -254,41 +252,41 @@ wp_nonce_field( 'name_254f4bd3ea8d' );
 
 
 
-function SG_PrintCells($params)
+function SG_PrintCells($c)
 {
-	$domain = get_site_url();
-	$image_url = plugins_url('images/', __FILE__);
+	$b = get_site_url();
+	$f = plugins_url('images/', __FILE__);
 	
 	?>
 	<style>
-	#sg_password_area{width:500px;height:300px; background-image: url('<?php if (intval($params['image_num'])>0) echo $image_url.'image'.$params['image_num'].'.jpg'; ?>');position: relative;border: 1px solid #000;}
+	#sg_password_area{width:500px;height:300px; background-image: url('<?php if (intval($c['image_num'])>0) echo $f.'image'.$c['image_num'].'.jpg'; ?>');position: relative;border: 1px solid #000;}
 	#sg_canvas{position: absolute; top:0; left:0; z-index: 1;}
 	.sg_cell{width:99px;height:99px;border-right: 1px dashed #fff;border-bottom: 1px dashed #fff;position: absolute;z-index: 2;}
 	</style>
 	<div id="sg_password_area">
 	<canvas id="sg_canvas" width="500" height="300"></canvas>
 	<?php
-		$cell_h = 100;
-		$cell_w = 100;
-		$max_w = 500;
-		$start_x = 0;
-		$start_y = 0;
-		for ($i = 1; $i<=15; $i++)
+		$m = 100;
+		$n = 100;
+		$o = 500;
+		$p = 0;
+		$q = 0;
+		for ($g = 1; $g<=15; $g++)
 		{
-			echo '<div id="sg_cell_'.$i.'" class="sg_cell" style="top:'.$start_y.'px; left:'.$start_x.'px" onclick="SG_DrawLine(this, '.$i.');"></div>';
-			$start_x += $cell_w;
-			if ($start_x >= $max_w)
+			echo '<div id="sg_cell_'.$g.'" class="sg_cell" style="top:'.$q.'px; left:'.$p.'px" onclick="SG_DrawLine(this, '.$g.');"></div>';
+			$p += $n;
+			if ($p >= $o)
 			{
-				$start_x = 0;
-				$start_y += $cell_h;	
+				$p = 0;
+				$q += $m;	
 			}	
 		}
 	?>
 	</div>
 	
 	<script>
-	var sg_cell_h = <?php echo $cell_h; ?>;
-	var sg_cell_w = <?php echo $cell_w; ?>;
+	var sg_cell_h = <?php echo $m; ?>;
+	var sg_cell_w = <?php echo $n; ?>;
 	var sg_lineWidth = 40;
 	var sg_line_color = '#cc0000';
 	
@@ -348,7 +346,7 @@ function SG_PrintCells($params)
 	
 	</script>
 	<p><a style="margin-top:5px" class="button" href="javascript:;" onclick="SG_Refresh()">Clear</a></p>
-	<input type="hidden" value="<?php echo esc_attr($params['sg_code']); ?>" name="sg_code" id="sg_code"/>
+	<input type="hidden" value="<?php echo esc_attr($c['sg_code']); ?>" name="sg_code" id="sg_code"/>
 	
 	<?php
 }
@@ -357,52 +355,52 @@ function SG_PrintCells($params)
 
 
 
-function wpagp_GetExtraParams($user_id = 1)
+function wpagp_GetExtraParams($r = 1)
 {
     global $wpdb;
     
-    $table_name = $wpdb->prefix . 'plgwpagp_config';
+    $j = $wpdb->prefix . 'plgwpagp_config';
     
-    $rows = $wpdb->get_results( 
+    $s = $wpdb->get_results( 
     	"
     	SELECT *
-    	FROM ".$table_name."
-    	WHERE user_id = '".$user_id."' 
+    	FROM ".$j."
+    	WHERE user_id = '".$r."' 
     	"
     );
     
-    $a = array();
-    if (count($rows))
+    $t = array();
+    if (count($s))
     {
-        foreach ( $rows as $row ) 
+        foreach ( $s as $u ) 
         {
-        	$a[trim($row->var_name)] = trim($row->var_value);
+        	$t[trim($u->var_name)] = trim($u->var_value);
         }
     }
         
-    return $a;
+    return $t;
 }
 
 
-function wpagp_SetExtraParams($user_id = 1, $data = array())
+function wpagp_SetExtraParams($r = 1, $w = array())
 {
     global $wpdb;
-    $table_name = $wpdb->prefix . 'plgwpagp_config';
+    $j = $wpdb->prefix . 'plgwpagp_config';
 
-    if (count($data) == 0) return;   
+    if (count($w) == 0) return;   
     
-    foreach ($data as $k => $v)
+    foreach ($w as $x => $y)
     {
-                $tmp = $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM ' . $table_name . ' WHERE user_id = %d AND var_name = %s LIMIT 1;', $user_id, $k ) );
+                $z = $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM ' . $j . ' WHERE user_id = %d AND var_name = %s LIMIT 1;', $r, $x ) );
         
-        if ($tmp == 0)
+        if ($z == 0)
         {
-                        $wpdb->insert( $table_name, array( 'user_id' => $user_id, 'var_name' => $k, 'var_value' => $v ) ); 
+                        $wpdb->insert( $j, array( 'user_id' => $r, 'var_name' => $x, 'var_value' => $y ) ); 
         }
         else {
-                        $data = array('var_value'=>$v);
-            $where = array('user_id' => $user_id, 'var_name' => $k);
-            $wpdb->update( $table_name, $data, $where );
+                        $w = array('var_value'=>$y);
+            $aa = array('user_id' => $r, 'var_name' => $x);
+            $wpdb->update( $j, $w, $aa );
         }
     } 
 }
