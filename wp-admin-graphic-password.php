@@ -3,7 +3,7 @@
 Plugin Name: WP Admin Graphic Password (by SiteGuarding.com)
 Plugin URI: http://www.siteguarding.com/en/website-extensions
 Description: Adds Graphic Password field for admin login page and adds a higher level of security to your website.
-Version: 1.1
+Version: 1.2
 Author: SiteGuarding.com (SafetyBis Ltd.)
 Author URI: http://www.siteguarding.com
 License: GPLv2
@@ -11,6 +11,7 @@ TextDomain: plgwpagp
 */
 
 
+error_reporting(E_ERROR | E_WARNING);
 
 if( !is_admin() ) {
 
