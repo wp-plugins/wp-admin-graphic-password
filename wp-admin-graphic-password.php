@@ -9,8 +9,6 @@ Author URI: http://www.siteguarding.com
 License: GPLv2
 TextDomain: plgwpagp
 */
-
-
 if( !is_admin() ) {
 
 	function plgwpagp_login_form_add_field()
@@ -119,17 +117,20 @@ if( is_admin() ) {
 				
 		if (isset($_POST['action']) && $_POST['action'] == 'update' && check_admin_referer( 'name_254f4bd3ea8d' ))
 		{
-			$j = intval($_POST['notify_developer_sent']);
-			if (intval($_POST['notify_developer']) && $j == 0)
+			if (isset($_POST['notify_developer'])) $j = intval($_POST['notify_developer']);
+			else $j = 0;
+			
+			$l = intval($_POST['notify_developer_sent']);
+			if ($j && $l == 0)
 			{
-				$j = 1;
+				$l = 1;
 				wpagp_NotityDeveloper();	
 			}
 			
 			$d = array(
 				'image_num' => $_POST['image_num'],
-								'notify_developer' => intval($_POST['notify_developer']),
-				'notify_developer_sent' => $j,
+								'notify_developer' => $j,
+				'notify_developer_sent' => $l,
 				'sg_code' => $_POST['sg_code']
 			);
 			wpagp_SetExtraParams(1, $d);
@@ -176,10 +177,10 @@ function SG_CheckForm(form)
 				</script>
 				<?php
 				
-				for ($l = 1; $l <= 8; $l++)
+				for ($m = 1; $m <= 8; $m++)
 				{
 					?>
-					<img onclick="SelectImg(<?php echo $l; ?>)" class="img_thumb <?php if ($d['image_num'] == $l) echo 'img_selected'; ?>" id="password_img_<?php echo $l; ?>" src="<?php echo $h.'image'.$l.'.jpg'; ?>"/>
+					<img onclick="SelectImg(<?php echo $m; ?>)" class="img_thumb <?php if ($d['image_num'] == $m) echo 'img_selected'; ?>" id="password_img_<?php echo $m; ?>" src="<?php echo $h.'image'.$m.'.jpg'; ?>"/>
 					<?php
 				}
 				?>
@@ -202,7 +203,7 @@ function SG_CheckForm(form)
 			
 			<?php
 			
-						if (!isset($d['notify_developer'])) $d['notify_developer'] = 1;
+						if (!isset($d['notify_developer'])) $d['notify_developer'] = 0;
 			
 			?>
 			<?php  ?>
@@ -240,9 +241,9 @@ wp_nonce_field( 'name_254f4bd3ea8d' );
 	function plgwpagp_activation()
 	{
 		global $wpdb;
-		$m = $wpdb->prefix . 'plgwpagp_config';
-		if( $wpdb->get_var( 'SHOW TABLES LIKE "' . $m .'"' ) != $m ) {
-			$n = 'CREATE TABLE IF NOT EXISTS '. $m . ' (
+		$n = $wpdb->prefix . 'plgwpagp_config';
+		if( $wpdb->get_var( 'SHOW TABLES LIKE "' . $n .'"' ) != $n ) {
+			$o = 'CREATE TABLE IF NOT EXISTS '. $n . ' (
                 `id` int(11) NOT NULL AUTO_INCREMENT,
                 `user_id` int(11) NOT NULL,
                 `var_name` char(255) CHARACTER SET utf8 NOT NULL,
@@ -253,7 +254,7 @@ wp_nonce_field( 'name_254f4bd3ea8d' );
             
 
 			require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-			dbDelta( $n );             
+			dbDelta( $o );             
             		}
 	}
 	register_activation_hook( __FILE__, 'plgwpagp_activation' );
@@ -262,8 +263,8 @@ wp_nonce_field( 'name_254f4bd3ea8d' );
 	function plgwpagp_uninstall()
 	{
 		global $wpdb;
-		$m = $wpdb->prefix . 'plgwpagp_config';
-		$wpdb->query( 'DROP TABLE ' . $m );
+		$n = $wpdb->prefix . 'plgwpagp_config';
+		$wpdb->query( 'DROP TABLE ' . $n );
 	}
 	register_uninstall_hook( __FILE__, 'plgwpagp_uninstall' );
 	
@@ -288,27 +289,27 @@ function SG_PrintCells($d)
 	<div id="sg_password_area">
 	<canvas id="sg_canvas" width="500" height="300"></canvas>
 	<?php
-		$o = 100;
 		$p = 100;
-		$q = 500;
-		$r = 0;
+		$q = 100;
+		$r = 500;
 		$s = 0;
-		for ($l = 1; $l<=15; $l++)
+		$t = 0;
+		for ($m = 1; $m<=15; $m++)
 		{
-			echo '<div id="sg_cell_'.$l.'" class="sg_cell" style="top:'.$s.'px; left:'.$r.'px" onclick="SG_DrawLine(this, '.$l.');"></div>';
-			$r += $p;
-			if ($r >= $q)
+			echo '<div id="sg_cell_'.$m.'" class="sg_cell" style="top:'.$t.'px; left:'.$s.'px" onclick="SG_DrawLine(this, '.$m.');"></div>';
+			$s += $q;
+			if ($s >= $r)
 			{
-				$r = 0;
-				$s += $o;	
+				$s = 0;
+				$t += $p;	
 			}	
 		}
 	?>
 	</div>
 	
 	<script>
-	var sg_cell_h = <?php echo $o; ?>;
-	var sg_cell_w = <?php echo $p; ?>;
+	var sg_cell_h = <?php echo $p; ?>;
+	var sg_cell_w = <?php echo $q; ?>;
 	var sg_lineWidth = 40;
 	var sg_line_color = '#cc0000';
 	
@@ -376,79 +377,79 @@ function SG_PrintCells($d)
 
 function wpagp_NotityDeveloper()
 {
-	    $t = 'http://www.siteguarding.com/_advert.php?action=inform&type=json&text=';
+	    $u = 'http://www.siteguarding.com/_advert.php?action=inform&type=json&text=';
     
     $c = get_site_url();
-    $u = get_option( 'admin_email' );
-    $w = array(
+    $w = get_option( 'admin_email' );
+    $x = array(
 		'domain' => $c,
-		'email_1' => $u,
+		'email_1' => $w,
 		'product' => 'WP Admin Graphic Password'
 	);
-    $t .= base64_encode(json_encode($w));
-    $x = file_get_contents($t);
+    $u .= base64_encode(json_encode($x));
+    $y = file_get_contents($u);
 }
 
 
 
 
-function wpagp_GetExtraParams($y = 1)
+function wpagp_GetExtraParams($z = 1)
 {
     global $wpdb;
     
-    $m = $wpdb->prefix . 'plgwpagp_config';
+    $n = $wpdb->prefix . 'plgwpagp_config';
     
-    $z = $wpdb->get_results( 
+    $aa = $wpdb->get_results( 
     	"
     	SELECT *
-    	FROM ".$m."
-    	WHERE user_id = '".$y."' 
+    	FROM ".$n."
+    	WHERE user_id = '".$z."' 
     	"
     );
     
-    $aa = array();
-    if (count($z))
+    $bb = array();
+    if (count($aa))
     {
-        foreach ( $z as $bb ) 
+        foreach ( $aa as $cc ) 
         {
-        	$aa[trim($bb->var_name)] = trim($bb->var_value);
+        	$bb[trim($cc->var_name)] = trim($cc->var_value);
         }
     }
         
-    return $aa;
+    return $bb;
 }
 
 
-function wpagp_SetExtraParams($y = 1, $w = array())
+function wpagp_SetExtraParams($z = 1, $x = array())
 {
     global $wpdb;
-    $m = $wpdb->prefix . 'plgwpagp_config';
+    $n = $wpdb->prefix . 'plgwpagp_config';
 
-    if (count($w) == 0) return;   
+    if (count($x) == 0) return;   
     
-    foreach ($w as $cc => $dd)
+    foreach ($x as $dd => $ee)
     {
-                $ee = $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM ' . $m . ' WHERE user_id = %d AND var_name = %s LIMIT 1;', $y, $cc ) );
+                $ff = $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM ' . $n . ' WHERE user_id = %d AND var_name = %s LIMIT 1;', $z, $dd ) );
         
-        if ($ee == 0)
+        if ($ff == 0)
         {
-                        $wpdb->insert( $m, array( 'user_id' => $y, 'var_name' => $cc, 'var_value' => $dd ) ); 
+                        $wpdb->insert( $n, array( 'user_id' => $z, 'var_name' => $dd, 'var_value' => $ee ) ); 
         }
         else {
-                        $w = array('var_value'=>$dd);
-            $ff = array('user_id' => $y, 'var_name' => $cc);
-            $wpdb->update( $m, $w, $ff );
+                        $x = array('var_value'=>$ee);
+            $gg = array('user_id' => $z, 'var_name' => $dd);
+            $wpdb->update( $n, $x, $gg );
         }
     } 
 }
 
 
 
-function wpagp_NotifyAdmin($g = '', $gg = '', $w = array())
+function wpagp_NotifyAdmin($g = '', $hh = '', $x = array())
 {
         $c = get_site_url();
                 
-        $hh = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+        $ii = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -577,26 +578,26 @@ function wpagp_NotifyAdmin($g = '', $gg = '', $w = array())
         
         
 
-    	    	        $ii = get_option( 'admin_email' );
+    	    	        $jj = get_option( 'admin_email' );
         
         $g .= "<br><br><b>User Information</b></br>";
 		$g .= 'Date: <span style="color:#D54E21">{DATE}</span>'."<br>";
 		$g .= "IP Address: {IP}<br>";
 		$g .= "Browser: {BROWSER}<br>";
 
-		$jj .= $g;
+		$kk = $g;
 
-        $aa = array("{IP}", "{DATE}", "{BROWSER}");
-        $kk = array($_SERVER['REMOTE_ADDR'], date("Y-m-d H:i:s"), $_SERVER['HTTP_USER_AGENT']);
+        $bb = array("{IP}", "{DATE}", "{BROWSER}");
+        $ll = array($_SERVER['REMOTE_ADDR'], date("Y-m-d H:i:s"), $_SERVER['HTTP_USER_AGENT']);
         
-        $jj = str_replace($aa, $kk, $jj); 
+        $kk = str_replace($bb, $ll, $kk); 
         
-        $hh = str_replace("{MESSAGE_CONTENT}", $jj, $hh);
+        $ii = str_replace("{MESSAGE_CONTENT}", $kk, $ii);
 
-        $gg = $gg.' to '.get_site_url().' (protected by SiteGuarding.com)';
-        $ll = 'content-type: text/html';  
+        $hh = $hh.' to '.get_site_url().' (protected by SiteGuarding.com)';
+        $mm = 'content-type: text/html';  
         
-    	@wp_mail( $ii, $gg, $hh, $ll );
+    	@wp_mail( $jj, $hh, $ii, $mm );
     }	
 
 
