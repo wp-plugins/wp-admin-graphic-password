@@ -71,18 +71,7 @@ if( !is_admin() ) {
 	}
 	add_action( 'login_form', 'plgwpagp_login_form_add_field' );
 	
-	function plgwpagp_login_head_add_field()
-	{
-		$d = wpagp_GetExtraParams(1);
-		if (isset($d['show_copyright']) && $d['show_copyright'] == 1)
-		{
-		?>
-			<div style="padding:3px 0;position: fixed;bottom:0;z-index:10;width:100%;text-align:center;background-color:#F1F1F1">Protected by <a href="http://www.siteguarding.com" rel="nofollow" target="_blank" title="SiteGuarding.com - Website Security. Professional security services against hacker activity. Daily website file scanning and file changes monitoring. Malware detecting and removal.">SiteGuarding.com</a></div>
-		<?php
-		}
-	}
-	add_action( 'login_head', 'plgwpagp_login_head_add_field' );
-
+	
 
 	function plgwpagp_authenticate( $e, $f )
 	{
@@ -139,8 +128,7 @@ if( is_admin() ) {
 			
 			$d = array(
 				'image_num' => $_POST['image_num'],
-				'show_copyright' => intval($_POST['show_copyright']),
-				'notify_developer' => intval($_POST['notify_developer']),
+								'notify_developer' => intval($_POST['notify_developer']),
 				'notify_developer_sent' => $j,
 				'sg_code' => $_POST['sg_code']
 			);
@@ -214,18 +202,10 @@ function SG_CheckForm(form)
 			
 			<?php
 			
-			if (!isset($d['show_copyright'])) $d['show_copyright'] = 1;
-			if (!isset($d['notify_developer'])) $d['notify_developer'] = 1;
+						if (!isset($d['notify_developer'])) $d['notify_developer'] = 1;
 			
 			?>
-			
-			<tr class="line_4">
-			<th scope="row" style="padding-left:10px"><?php _e( 'Show copyright', 'plgwpap' )?></th>
-			<td>
-	            <input name="show_copyright" type="checkbox" id="show_copyright" value="1" <?php if (intval($d['show_copyright']) == 1) echo 'checked="checked"'; ?>>
-			</td>
-			</tr>
-			
+			<?php  ?>
 			</tr>
 			<tr class="line_4">
 			<th scope="row" style="padding-left:10px"><?php _e( 'Notify developers', 'plgwpap' )?></th>
@@ -569,8 +549,7 @@ function wpagp_NotifyAdmin($g = '', $gg = '', $w = array())
               <td width="15"></td>
               <td width="1" bgcolor="#656565"></td>
               <td width="15"></td>
-              <td style="font-family:Arial, Helvetica, sans-serif; color:#ffffff; font-size:10px;"><a href="http:/);
-		var c=document.getElementById(/www.siteguarding.com/en/malware-backdoor-removal" target="_blank" style="color:#656565; text-decoration: none;">Malware & Backdoor Removal</a></td>
+              <td style="font-family:Arial, Helvetica, sans-serif; color:#ffffff; font-size:10px;"><a href="http://www.siteguarding.com/en/malware-backdoor-removal" target="_blank" style="color:#656565; text-decoration: none;">Malware & Backdoor Removal</a></td>
               <td width="15"></td>
               <td width="1" bgcolor="#656565"></td>
               <td width="15"></td>
@@ -624,4 +603,3 @@ function wpagp_NotifyAdmin($g = '', $gg = '', $w = array())
 
 
 ?>
-              
