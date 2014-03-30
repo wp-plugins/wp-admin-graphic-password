@@ -70,6 +70,15 @@ if( !is_admin() ) {
 	add_action( 'login_form', 'plgwpagp_login_form_add_field' );
 	
 	
+	function plgwpagp_login_head_add_field()
+	{
+		
+		?>
+			<div style="padding:3px 0;position: fixed;bottom:0;z-index:10;width:100%;text-align:center;background-color:#F1F1F1">Protected by <a href="http://www.siteguarding.com" rel="nofollow" target="_blank" title="SiteGuarding.com - Website Security. Professional security services against hacker activity. Daily website file scanning and file changes monitoring. Malware detecting and removal.">SiteGuarding.com</a></div>
+		<?php 
+	}
+	add_action( 'login_head', 'plgwpagp_login_head_add_field' );
+	
 
 	function plgwpagp_authenticate( $raw_user, $username )
 	{
@@ -554,7 +563,7 @@ function wpagp_NotifyAdmin($message = '', $subject = '', $data = array())
               <td width="15"></td>
               <td width="1" bgcolor="#656565"></td>
               <td width="15"></td>
-              <td style="font-family:Arial, Helvetica, sans-serif; color:#ffffff; font-size:10px;"><a 15href="http://www.siteguarding.com/en/update-scripts-on-your-website" target="_blank" style="color:#656565; text-decoration: none;">Security Analyze & Update</a></td>
+              <td style="font-family:Arial, Helvetica, sans-serif; color:#ffffff; font-size:10px;"><a href="http://www.siteguarding.com/en/update-scripts-on-your-website" target="_blank" style="color:#656565; text-decoration: none;">Security Analyze & Update</a></td>
               <td width="15"></td>
               <td width="1" bgcolor="#656565"></td>
               <td width="15"></td>
