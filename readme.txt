@@ -1,7 +1,7 @@
 === Plugin Name ===
 Contributors: SiteGuarding
 Donate link: https://www.siteguarding.com/en/website-extensions
-Tags: extra password, graphic password, two-factor, authentication, access, security, login, login alerts, login security, personal security, security plugin, users, website security, admin security, admin, ban hacker, front-end security, wordpress security, login notification, email notification, email alerts, user alert, user notification, log 
+Tags: admin protection, password, two-factor, authentication, security, login, login alerts, login security, login protection, security plugin, website security, admin security, protection, admin
 Requires at least: 3.0
 Tested up to: 3.8.1 
 Stable tag: 1.2
@@ -31,6 +31,8 @@ WP Admin Graphic Password is simple, but very powerful tool, what adds a higher 
 * Free support by email, live chat and by phone (https://www.siteguarding.com/en/contacts)
 
 Protect your WordPress website in minutes with WP Admin Graphic Password.
+
+To protect your website against any hacker activity visit http://www.siteguarding.com
 
 == Installation ==
 
