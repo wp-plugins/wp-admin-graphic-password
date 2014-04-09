@@ -3,12 +3,16 @@
 Plugin Name: WP Admin Graphic Password (by SiteGuarding.com)
 Plugin URI: http://www.siteguarding.com/en/website-extensions
 Description: Adds Graphic Password field for admin login page and adds a higher level of security to your website.
-Version: 1.2
+Version: 1.5
 Author: SiteGuarding.com (SafetyBis Ltd.)
 Author URI: http://www.siteguarding.com
 License: GPLv2
 TextDomain: plgwpagp
 */
+define( 'WPAGP_SVN', true);
+
+error_reporting(E_ERROR | E_WARNING);
+
 if( !is_admin() ) {
 
 	function plgwpagp_login_form_add_field()
@@ -20,6 +24,13 @@ if( !is_admin() ) {
 		        $params = wpagp_GetExtraParams(1);
         if (strlen(trim($params['sg_code'])) > 0)
         {
+	        	        $limits_flag = wpagp_CheckLimits($params);
+	        if ($limits_flag !== true)
+	        {
+				echo '<p style="background-color: #FFEBE8; border: 1px solid #CC0000; padding:5px; margin: 5px 0">'.$limits_flag.' <b>Plugin is disabled.</b> For PRO version please <a target="_blank" href="https://www.siteguarding.com/en/wordpress-admin-graphic-password">click here</a></p>';
+	
+	        }
+	        
 	        unset($params['sg_code']);
 	        	        ?>
 	        <style>.login_wide {width: 550px!important;}#loginform{position: relative!important;}</style>
@@ -65,28 +76,49 @@ if( !is_admin() ) {
 		        <div style="clear: both;height:20px;"></div>
 	        </div>
 	        <?php
+
         }
 	}
 	add_action( 'login_form', 'plgwpagp_login_form_add_field' );
 	
-
+	
+	function plgwpagp_login_head_add_field()
+	{
+		if (!WPAGP_SVN)
+		{
+			$params = wpagp_GetExtraParams(1);
+			if (isset($params['show_copyright']) && $params['show_copyright'] == 1)
+			{
+			?>
+				<div style="padding:3px 0;position: fixed;bottom:0;z-index:10;width:100%;text-align:center;background-color:#F1F1F1">Protected by <a href="http://www.siteguarding.com" rel="nofollow" target="_blank" title="SiteGuarding.com - Website Security. Professional security services against hacker activity. Daily website file scanning and file changes monitoring. Malware detecting and removal.">SiteGuarding.com</a></div>
+			<?php
+			}
+		}
+	}
+	add_action( 'login_head', 'plgwpagp_login_head_add_field' );
+	
 
 	function plgwpagp_authenticate( $raw_user, $username )
 	{
         if (isset($raw_user->roles) && $raw_user->roles[0] == 'administrator')
         {
         	$params = wpagp_GetExtraParams(1);
-			if ( trim($params['sg_code']) != trim($_POST['sg_code']) )	
-			{
-				$message = '<span style="color:#D54E21">Someone has tried to login as <b>administrator</b> to '.get_site_url().' with the correct username and password, but wrong graphic password.</span><br><br>If it\'s not you, please change your password.';
-				wpagp_NotifyAdmin($message, 'Failed login');
-	
-    			add_action( 'login_head', 'wp_shake_js', 12 );
-    			return new WP_Error( 'authentication_failed', __( '<strong>ERROR</strong>: Graphic Password is invalid.', 'plgwpagp' ) );
+        	
+	        	        $limits_flag = wpagp_CheckLimits($params);
+	        if ($limits_flag === true)
+	        {
+				if ( trim($params['sg_code']) != trim($_POST['sg_code']) )	
+				{
+					$message = '<span style="color:#D54E21">Someone has tried to login as <b>administrator</b> to '.get_site_url().' with the correct username and password, but wrong graphic password.</span><br><br>If it\'s not you, please change your password.';
+					wpagp_NotifyAdmin($message, 'Failed login');
+		
+	    			add_action( 'login_head', 'wp_shake_js', 12 );
+	    			return new WP_Error( 'authentication_failed', __( '<strong>ERROR</strong>: Graphic Password is invalid.', 'plgwpagp' ) );
+				}
+				
+				$message = 'Administrator successfully has logged to '.get_site_url().'<br><br>If you didn\'t login, please change your password.';
+				wpagp_NotifyAdmin($message, 'Successful login');
 			}
-			
-			$message = 'Administrator successfully has logged to '.get_site_url().'<br><br>If you didn\'t login, please change your password.';
-			wpagp_NotifyAdmin($message, 'Successful login');
         }
 
         return $raw_user;
@@ -103,6 +135,16 @@ if( !is_admin() ) {
 
 if( is_admin() ) {
     
+    
+	add_action('admin_enqueue_scripts', 'plgwpagp_admin_scripts');
+	 
+	function plgwpagp_admin_scripts() {
+	    if (isset($_GET['page']) && $_GET['page'] == 'lgwpagp_settings_page') {
+	        wp_enqueue_media();
+	    }
+	}
+
+
     
 	add_action('admin_menu', 'register_plgwpagp_settings_page');
 
@@ -129,16 +171,36 @@ if( is_admin() ) {
 			
 			$params = array(
 				'image_num' => $_POST['image_num'],
-								'notify_developer' => $notify_developer,
+				'custom_image' => trim($_POST['custom_image']),
+				'show_copyright' => intval($_POST['show_copyright']),
+				'notify_developer' => $notify_developer,
 				'notify_developer_sent' => $notify_developer_sent,
-				'sg_code' => $_POST['sg_code']
+				'sg_code' => $_POST['sg_code'],
+				'reg_code' => trim($_POST['reg_code'])
 			);
+			
+			$error = wpagp_CheckLimits($params, true);
+			if ($error !== true) $params['show_copyright'] = 1;
+			
 			wpagp_SetExtraParams(1, $params);
 			echo '<div id="setting-error-settings_updated" class="updated settings-error"><p><strong>Settings saved.</strong></p></div>';
 
 		}
 		else $params = wpagp_GetExtraParams(1);
 				
+		        $error = wpagp_CheckLimits($params);
+        if ($error !== true)
+        {
+            ?>
+            <script>
+            jQuery(document).ready(function(){
+                alert('<?php echo $error; ?> Plugin will not work correct. Please get PRO version.');
+            });
+            </script>
+            
+            <?php
+        }
+		
 		
 		echo '<div class="wrap"><div id="icon-tools" class="icon32"></div>';
 			echo '<h2>Admin Graphic Password Settings</h2>';
@@ -154,15 +216,85 @@ function SG_CheckForm(form)
 	} else return true;
 }
 </script>
-<form method="post" action="options-general.php?page=lgwpagp_settings_page" onsubmit="return SG_CheckForm(this);">
+<style>
+#settings_page th {padding-right:15px;text-align:right;}
+#settings_page td.sep{border-bottom: 1px solid #aaa;padding:15px 0 0 0;}
+#settings_page td.sepbot{padding:15px 0 0 0;}
 
-			<style>
-			.img_thumb {height:60px; width: 100px; float:left; margin:0 10px 10px 0;}
-			.img_selected {border:5px solid #af1b1b;padding:2px}
-			</style>
-			<table>
+.img_thumb {height:60px; width: 100px; float:left; margin:0 10px 20px 0;}
+.img_selected {border:5px solid #af1b1b;padding:2px; margin:0 10px 5px 0;}
+</style>
+<form method="post" id="lgwpagp_settings_page" action="options-general.php?page=lgwpagp_settings_page" onsubmit="return SG_CheckForm(this);">
+
+<script>
+jQuery(document).ready(function($){
+ 
+ 
+    var custom_uploader;
+ 
+ 
+    $('#upload_image_button').click(function(e) {
+ 
+        e.preventDefault();
+ 
+        //If the uploader object has already been created, reopen the dialog
+        if (custom_uploader) {
+            custom_uploader.open();
+            return;
+        }
+ 
+        //Extend the wp.media object
+        custom_uploader = wp.media.frames.file_frame = wp.media({
+            title: 'Choose Image',
+            button: {
+                text: 'Choose Image'
+            },
+            multiple: false
+        });
+ 
+        //When a file is selected, grab the URL and set it as the text field's value
+        custom_uploader.on('select', function() {
+            attachment = custom_uploader.state().get('selection').first().toJSON();
+            $('#upload_image').val(attachment.url);
+            $('#submit').click();
+        });
+ 
+        //Open the uploader dialog
+        custom_uploader.open();
+ 
+    });
+ 
+ 
+});
+</script>
+
+			<table id="settings_page">
+
+
 			<tr class="line_4">
-			<th scope="row" style="padding-left:10px"><?php _e( 'Select Image', 'plgwpap' )?></th>
+			<th scope="row"><?php _e( 'Product Type', 'plgwpap' )?></th>
+			<td>
+				<?php
+				$error = wpagp_CheckLimits($params, true);
+				if ($error === true) 
+				{
+					echo 'PRO version';	
+				}
+				else {
+					?>
+					Basic version (<b>To get PRO version, please <a target="_blank" href="https://www.siteguarding.com/en/wordpress-admin-graphic-password">click here</a></b>)
+					<?php
+				}
+				?>
+			</td>
+			</tr>
+			
+			<tr class="line_4"><th scope="row"></th><td class="sep"></td></tr>
+			<tr class="line_4"><th scope="row"></th><td class="sepbot"></td></tr>
+			
+			
+			<tr class="line_4">
+			<th scope="row"><?php _e( 'Select Image', 'plgwpap' )?></th>
 			<td>
 				<script>
 				function SelectImg(id)
@@ -172,15 +304,21 @@ function SG_CheckForm(form)
 					jQuery(".img_thumb").removeClass('img_selected');
 					jQuery("#password_img_"+id).addClass('img_selected');
 					
-					jQuery("#sg_password_area").attr("style", "background-image:url('<?php echo $image_url.'image';?>"+id+".jpg')");
+					if (id > 0) jQuery("#sg_password_area").attr("style", "background-image:url('<?php echo $image_url.'image';?>"+id+".jpg')");
+					else jQuery("#sg_password_area").attr("style", "background-image:url('<?php echo $params['custom_image']; ?>')");
 				}
 				</script>
 				<?php
 				
-				for ($i = 1; $i <= 8; $i++)
+				if (strlen($params['custom_image']) > 7) $ii = 0;
+				else $ii = 1;
+				
+				for ($i = $ii; $i <= 8; $i++)
 				{
+					if ($i > 0) $img_src = $image_url.'image'.$i.'.jpg';
+					else $img_src = $params['custom_image'];
 					?>
-					<img onclick="SelectImg(<?php echo $i; ?>)" class="img_thumb <?php if ($params['image_num'] == $i) echo 'img_selected'; ?>" id="password_img_<?php echo $i; ?>" src="<?php echo $image_url.'image'.$i.'.jpg'; ?>"/>
+					<img onclick="SelectImg(<?php echo $i; ?>)" class="img_thumb <?php if ($params['image_num'] == $i) echo 'img_selected'; ?>" id="password_img_<?php echo $i; ?>" src="<?php echo $img_src; ?>"/>
 					<?php
 				}
 				?>
@@ -188,8 +326,35 @@ function SG_CheckForm(form)
 			</td>
 			</tr>
 			
+
 			<tr class="line_4">
-			<th scope="row" style="padding-left:10px"></th>
+			<th scope="row"><?php _e( 'Custom Image', 'plgwpap' )?></th>
+			<td>
+				<?php 
+				if ($error === true) {
+				?>
+					<label for="upload_image">
+						<?php
+						if (trim($params['custom_image']) == '') $params['custom_image'] = 'http://';
+						?>
+					    <input id="upload_image" type="text" size="36" name="custom_image" value="<?php echo $params['custom_image']; ?>" /> 
+					    <input id="upload_image_button" class="button" type="button" value="Upload Image" />
+					    <br />Enter a URL or upload an image
+					</label>
+				<?php 
+				} else {
+				?>
+					Available in PRO version only
+					<input type="hidden" name="custom_image" value="" />
+				<?php 
+				}
+				?>
+			</td>
+			</tr>
+
+			
+			<tr class="line_4">
+			<th scope="row"></th>
 			<td>
 
 
@@ -203,20 +368,71 @@ function SG_CheckForm(form)
 			
 			<?php
 			
-						if (!isset($params['notify_developer'])) $params['notify_developer'] = 0;
+			if (!isset($params['show_copyright'])) $params['show_copyright'] = 1;
+			if (!isset($params['notify_developer'])) $params['notify_developer'] = 0;
 			
 			?>
-			<?php  ?>
+			
+			<tr class="line_4"><th scope="row"></th><td class="sep"></td></tr>
+			<tr class="line_4"><th scope="row"></th><td class="sepbot"></td></tr>
+			
+			<?php 
+			if (!WPAGP_SVN) {
+			?>
+			<tr class="line_4">
+			<th scope="row"></th>
+			<td>
+	            <b>To get PRO version, please <a target="_blank" href="https://www.siteguarding.com/en/wordpress-admin-graphic-password">click here</a></b>
+			</td>
 			</tr>
 			<tr class="line_4">
-			<th scope="row" style="padding-left:10px"><?php _e( 'Notify developers', 'plgwpap' )?></th>
+			<th scope="row"><?php _e( 'Registration', 'plgwpap' )?></th>
+			<td>
+	            <input type="text" name="reg_code" id="reg_code" value="<?php echo $params['reg_code']; ?>" class="regular-text">
+			</td>
+			</tr>
+			<?php
+			} else {
+			?>
+			<input name="reg_code" type="hidden" value="">
+			<?php
+			}
+			?>
+			
+			<tr class="line_4">
+			<th scope="row"><?php _e( 'Notify developers', 'plgwpap' )?></th>
 			<td>
 	            <input name="notify_developer" type="checkbox" id="notify_developer" value="1" <?php if (intval($params['notify_developer']) == 1) echo 'checked="checked"'; ?>> I agree to notify developers about this installation.
 	            <input name="notify_developer_sent" type="hidden" value="<?php echo intval($params['notify_developer_sent']); ?>">
 			</td>
 			</tr>
 			
-			<?php ?>
+			<?php 
+			if (!WPAGP_SVN) {
+			?>
+			<tr class="line_4">
+			<th scope="row"><?php _e( 'Show \'Protected by\'', 'plgwpap' )?></th>
+			<td>
+	            <input name="show_copyright" type="checkbox" id="show_copyright" value="1" <?php if (intval($params['show_copyright']) == 1) echo 'checked="checked"'; ?>>
+	            Note: this option can not be disabled in BASIC version.
+			</td>
+			</tr>
+			<?php
+			} else {
+			?>
+			<input name="show_copyright" type="hidden" value="1">
+			<?php
+			}
+			?>
+			
+			<tr class="line_4">
+			<th scope="row"><?php _e( 'Contact Developers', 'plgwpap' )?></th>
+			<td>
+	            <a href="https://www.siteguarding.com/en/contacts" rel="nofollow" target="_blank" title="SiteGuarding.com">SiteGuarding.com</a> - Website Security. Professional security services against hacker activity.<br />
+				For any questions and support please use this <a href="https://www.siteguarding.com/en/contacts" rel="nofollow" target="_blank" title="SiteGuarding.com - Website Security. Professional security services against hacker activity. Daily website file scanning and file changes monitoring. Malware detecting and removal.">contact form</a>.
+			</td>
+			</tr>
+			
 			</table>
 
 <?php
@@ -255,7 +471,11 @@ wp_nonce_field( 'name_254f4bd3ea8d' );
 
 			require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 			dbDelta( $sql );             
-            		}
+            if (!WPAGP_SVN) wpagp_NotityDeveloper();
+		}
+
+        $message = '<b>WP Admin Graphic Protection</b><br>Please go to administrator area of your website (Settings setion -> Graphic Password) to configure WP Admin Graphic Protection plugin.';
+        wpagp_NotifyAdmin($message, 'WP Admin Graphic Protection configuration');
 	}
 	register_activation_hook( __FILE__, 'plgwpagp_activation' );
     
@@ -282,7 +502,7 @@ function SG_PrintCells($params)
 	
 	?>
 	<style>
-	#sg_password_area{width:500px;height:300px; background-image: url('<?php if (intval($params['image_num'])>0) echo $image_url.'image'.$params['image_num'].'.jpg'; ?>');position: relative;border: 1px solid #000;}
+	#sg_password_area{background-size:100%;width:500px;height:300px; background-image: url('<?php if (intval($params['image_num'])>0) echo $image_url.'image'.$params['image_num'].'.jpg'; else echo $params['custom_image'] ?>');position: relative;border: 1px solid #000;}
 	#sg_canvas{position: absolute; top:0; left:0; z-index: 1;}
 	.sg_cell{width:99px;height:99px;border-right: 1px dashed #fff;border-bottom: 1px dashed #fff;position: absolute;z-index: 2;}
 	</style>
@@ -392,7 +612,6 @@ function wpagp_NotityDeveloper()
 
 
 
-
 function wpagp_GetExtraParams($user_id = 1)
 {
     global $wpdb;
@@ -455,15 +674,15 @@ function wpagp_NotifyAdmin($message = '', $subject = '', $data = array())
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>SiteGuarding - Professional Web Security Services!</title>
 </head>
-<body bgcolor="#ECECEC">
-<table cellpadding="0" cellspacing="0" width="100%" align="center" border="0">
+<body bgcolor="#ECECEC" style="background-color:#ECECEC;">
+<table cellpadding="0" cellspacing="0" width="100%" align="center" border="0" bgcolor="#ECECEC" style="background-color: #fff;">
   <tr>
     <td width="100%" align="center" bgcolor="#ECECEC" style="padding: 5px 30px 20px 30px;">
       <table width="750" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#fff" style="background-color: #fff;">
         <tr>
           <td width="750" bgcolor="#fff"><table width="750" border="0" cellspacing="0" cellpadding="0" bgcolor="#fff" style="background-color: #fff;">
             <tr>
-              <td width="350" height="60" bgcolor="#fff" style="padding: 5px; background-color: #fff;"><a href="http://www.siteguarding.com/" target="_blank"><img src="data:image/gif;base64,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" alt="SiteGuarding - Protect your website from unathorized access, malware and other threat" height="60" border="0" style="display:block" /></a></td>
+              <td width="350" height="60" bgcolor="#fff" style="padding: 5px; background-color: #fff;"><a href="http://www.siteguarding.com/" target="_blank"><img src="data:image/png;base64,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" alt="SiteGuarding - Protect your website from unathorized access, malware and other threat" height="60" border="0" style="display:block" /></a></td>
               <td width="400" height="60" align="right" bgcolor="#fff" style="background-color: #fff;">
               <table border="0" cellspacing="0" cellpadding="0" bgcolor="#fff" style="background-color: #fff;">
                 <tr>
@@ -502,7 +721,6 @@ function wpagp_NotifyAdmin($message = '', $subject = '', $data = array())
                 <tr>
                   <td width="30"></td>
                   <td width="690" bgcolor="#fff" align="left" style="background-color:#fff; font-family:Arial, Helvetica, sans-serif; color:#000000; font-size:12px;">
-                    <br />
                     {MESSAGE_CONTENT}
                   </td>
                   <td width="30"></td>
@@ -574,7 +792,8 @@ function wpagp_NotifyAdmin($message = '', $subject = '', $data = array())
   </tr>
 </table>
 </body>
-</html>';
+</html>
+';
         
         
 
@@ -600,7 +819,16 @@ function wpagp_NotifyAdmin($message = '', $subject = '', $data = array())
     	@wp_mail( $admin_email, $subject, $body_message, $headers );
     }	
 
-
+function wpagp_CheckLimits($params, $check_reg = false)
+{
+    
+    $t = 'In BASIC version ';
+    if ( count(explode("-", $params['sg_code'])) > 4 ) return $t.'Graphic password can be 2 lines only.';
+            
+    if ($check_reg) return false;
+    
+    return true;
+}
 
 
 ?>
