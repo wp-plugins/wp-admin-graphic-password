@@ -3,13 +3,17 @@
 Plugin Name: WP Admin Graphic Password (by SiteGuarding.com)
 Plugin URI: http://www.siteguarding.com/en/website-extensions
 Description: Adds Graphic Password field for admin login page and adds a higher level of security to your website.
-Version: 1.5
+Version: 1.6
 Author: SiteGuarding.com (SafetyBis Ltd.)
 Author URI: http://www.siteguarding.com
 License: GPLv2
 TextDomain: plgwpagp
 */
+
+
 define( 'WPAGP_SVN', true);
+define( 'PRO_version_URL', 'https://www.siteguarding.com/en/wordpress-admin-graphic-password');
+
 
 error_reporting(E_ERROR | E_WARNING);
 
@@ -21,13 +25,13 @@ if( !is_admin() ) {
 		
 		$domain = get_site_url();
         
-		        $params = wpagp_GetExtraParams(1);
-        if (strlen(trim($params['sg_code'])) > 0)
+		        $params = wpagp_GetExtraParams(1, false);
+                if (strlen(trim($params['sg_code'])) > 0)
         {
 	        	        $limits_flag = wpagp_CheckLimits($params);
 	        if ($limits_flag !== true)
 	        {
-				echo '<p style="background-color: #FFEBE8; border: 1px solid #CC0000; padding:5px; margin: 5px 0">'.$limits_flag.' <b>Plugin is disabled.</b> For PRO version please <a target="_blank" href="https://www.siteguarding.com/en/wordpress-admin-graphic-password">click here</a></p>';
+				echo '<p style="background-color: #FFEBE8; border: 1px solid #CC0000; padding:5px; margin: 5px 0">'.$limits_flag.' <b>Plugin is disabled.</b> For PRO version please <a target="_blank" href="'.PRO_version_URL.'">click here</a></p>';
 	
 	        }
 	        
@@ -84,16 +88,15 @@ if( !is_admin() ) {
 	
 	function plgwpagp_login_head_add_field()
 	{
-		if (!WPAGP_SVN)
+
+		$params = wpagp_GetExtraParams(1);
+		if (isset($params['show_copyright']) && $params['show_copyright'] == 1)
 		{
-			$params = wpagp_GetExtraParams(1);
-			if (isset($params['show_copyright']) && $params['show_copyright'] == 1)
-			{
-			?>
-				<div style="padding:3px 0;position: fixed;bottom:0;z-index:10;width:100%;text-align:center;background-color:#F1F1F1">Protected by <a href="http://www.siteguarding.com" rel="nofollow" target="_blank" title="SiteGuarding.com - Website Security. Professional security services against hacker activity. Daily website file scanning and file changes monitoring. Malware detecting and removal.">SiteGuarding.com</a></div>
-			<?php
-			}
+		?>
+			<div style="padding:3px 0;position: fixed;bottom:0;z-index:10;width:100%;text-align:center;background-color:#F1F1F1">Protected by <a href="http://www.siteguarding.com" rel="nofollow" target="_blank" title="SiteGuarding.com - Website Security. Professional security services against hacker activity. Daily website file scanning and file changes monitoring. Malware detecting and removal.">SiteGuarding.com</a></div>
+		<?php
 		}
+		
 	}
 	add_action( 'login_head', 'plgwpagp_login_head_add_field' );
 	
@@ -102,22 +105,28 @@ if( !is_admin() ) {
 	{
         if (isset($raw_user->roles) && $raw_user->roles[0] == 'administrator')
         {
-        	$params = wpagp_GetExtraParams(1);
-        	
+        	$params = wpagp_GetExtraParams(1, false);
+        	        	        	
 	        	        $limits_flag = wpagp_CheckLimits($params);
 	        if ($limits_flag === true)
 	        {
 				if ( trim($params['sg_code']) != trim($_POST['sg_code']) )	
 				{
-					$message = '<span style="color:#D54E21">Someone has tried to login as <b>administrator</b> to '.get_site_url().' with the correct username and password, but wrong graphic password.</span><br><br>If it\'s not you, please change your password.';
-					wpagp_NotifyAdmin($message, 'Failed login');
+					if (intval($params['notification_failed']))
+					{
+						$message = '<span style="color:#D54E21">Someone has tried to login as <b>administrator</b> to '.get_site_url().' with the correct username and password, but wrong graphic password.</span><br><br>If it\'s not you, please change your password.';
+						wpagp_NotifyAdmin($message, 'Failed login', $params);
+					}
 		
 	    			add_action( 'login_head', 'wp_shake_js', 12 );
 	    			return new WP_Error( 'authentication_failed', __( '<strong>ERROR</strong>: Graphic Password is invalid.', 'plgwpagp' ) );
 				}
 				
-				$message = 'Administrator successfully has logged to '.get_site_url().'<br><br>If you didn\'t login, please change your password.';
-				wpagp_NotifyAdmin($message, 'Successful login');
+				if (intval($params['notification_success']))
+				{
+					$message = 'Administrator successfully has logged to '.get_site_url().'<br><br>If you didn\'t login, please change your password.';
+					wpagp_NotifyAdmin($message, 'Successful login', $params);
+				}
 			}
         }
 
@@ -139,7 +148,7 @@ if( is_admin() ) {
 	add_action('admin_enqueue_scripts', 'plgwpagp_admin_scripts');
 	 
 	function plgwpagp_admin_scripts() {
-	    if (isset($_GET['page']) && $_GET['page'] == 'lgwpagp_settings_page') {
+	    if (isset($_GET['page']) && $_GET['page'] == 'plgwpagp_settings_page') {
 	        wp_enqueue_media();
 	    }
 	}
@@ -149,7 +158,7 @@ if( is_admin() ) {
 	add_action('admin_menu', 'register_plgwpagp_settings_page');
 
 	function register_plgwpagp_settings_page() {
-		add_submenu_page( 'options-general.php', 'Graphic Password', 'Graphic Password', 'manage_options', 'lgwpagp_settings_page', 'plgwpagp_settings_page_callback' ); 
+		add_submenu_page( 'options-general.php', 'Graphic Password', 'Graphic Password', 'manage_options', 'plgwpagp_settings_page', 'plgwpagp_settings_page_callback' ); 
 	}
 
 	function plgwpagp_settings_page_callback() 
@@ -169,18 +178,23 @@ if( is_admin() ) {
 				wpagp_NotityDeveloper();	
 			}
 			
+			$notification_success = 1;
+			
+			$notification_failed = 1;
+			
 			$params = array(
 				'image_num' => $_POST['image_num'],
 				'custom_image' => trim($_POST['custom_image']),
 				'show_copyright' => intval($_POST['show_copyright']),
 				'notify_developer' => $notify_developer,
 				'notify_developer_sent' => $notify_developer_sent,
-				'sg_code' => $_POST['sg_code'],
-				'reg_code' => trim($_POST['reg_code'])
+				'notification_success' => $_POST['notification_success'],
+				'notification_failed' => $_POST['notification_failed'],
+				'sg_code' => $_POST['sg_code']
 			);
 			
 			$error = wpagp_CheckLimits($params, true);
-			if ($error !== true) $params['show_copyright'] = 1;
+			if ($error !== true && WPAGP_SVN !== true) $params['show_copyright'] = 1;
 			
 			wpagp_SetExtraParams(1, $params);
 			echo '<div id="setting-error-settings_updated" class="updated settings-error"><p><strong>Settings saved.</strong></p></div>';
@@ -224,49 +238,8 @@ function SG_CheckForm(form)
 .img_thumb {height:60px; width: 100px; float:left; margin:0 10px 20px 0;}
 .img_selected {border:5px solid #af1b1b;padding:2px; margin:0 10px 5px 0;}
 </style>
-<form method="post" id="lgwpagp_settings_page" action="options-general.php?page=lgwpagp_settings_page" onsubmit="return SG_CheckForm(this);">
+<form method="post" id="plgwpagp_settings_page" action="options-general.php?page=plgwpagp_settings_page" onsubmit="return SG_CheckForm(this);">
 
-<script>
-jQuery(document).ready(function($){
- 
- 
-    var custom_uploader;
- 
- 
-    $('#upload_image_button').click(function(e) {
- 
-        e.preventDefault();
- 
-        //If the uploader object has already been created, reopen the dialog
-        if (custom_uploader) {
-            custom_uploader.open();
-            return;
-        }
- 
-        //Extend the wp.media object
-        custom_uploader = wp.media.frames.file_frame = wp.media({
-            title: 'Choose Image',
-            button: {
-                text: 'Choose Image'
-            },
-            multiple: false
-        });
- 
-        //When a file is selected, grab the URL and set it as the text field's value
-        custom_uploader.on('select', function() {
-            attachment = custom_uploader.state().get('selection').first().toJSON();
-            $('#upload_image').val(attachment.url);
-            $('#submit').click();
-        });
- 
-        //Open the uploader dialog
-        custom_uploader.open();
- 
-    });
- 
- 
-});
-</script>
 
 			<table id="settings_page">
 
@@ -275,19 +248,45 @@ jQuery(document).ready(function($){
 			<th scope="row"><?php _e( 'Product Type', 'plgwpap' )?></th>
 			<td>
 				<?php
-				$error = wpagp_CheckLimits($params, true);
-				if ($error === true) 
-				{
-					echo 'PRO version';	
-				}
-				else {
+					$error = false;
+					$version_txt = '<b>[Available in PRO version only]</b>';
+					$version_disable = ' disabled ';
 					?>
-					Basic version (<b>To get PRO version, please <a target="_blank" href="https://www.siteguarding.com/en/wordpress-admin-graphic-password">click here</a></b>)
-					<?php
-				}
-				?>
+					Basic version (<b>To get PRO version, please <a target="_blank" href="<?php echo PRO_version_URL; ?>">click here</a></b>)
+
 			</td>
 			</tr>
+			
+			<tr class="line_4"><th scope="row"></th><td class="sep"></td></tr>
+			<tr class="line_4"><th scope="row"></th><td class="sepbot"></td></tr>
+			
+			
+			<tr class="line_4">
+			<th scope="row"><?php _e( 'Multi User Mode', 'plgwpap' )?></th>
+			<td>
+	            <input <?php echo $version_disable; ?> name="multi_user_mode" type="checkbox" id="multi_user_mode" value="1" <?php if (intval($params['multi_user_mode']) == 1) echo 'checked="checked"'; ?>> Every administrator can have own graphic password <?php echo $version_txt; ?>
+			</td>
+			</tr>
+			
+			
+			<?php 
+			if (!WPAGP_SVN && $error === false) $params['notification_success'] = 1;
+			if (!WPAGP_SVN && $error === false) $params['notification_failed'] = 1;
+			?>
+			<tr class="line_4">
+			<th scope="row"><?php _e( 'Notifications', 'plgwpap' )?></th>
+			<td>
+	            <input <?php echo $version_disable; ?> name="notification_success" type="checkbox" id="notification_success" value="1" <?php if (intval($params['notification_success']) == 1) echo 'checked="checked"'; ?>> Inform me about successful logins <?php echo $version_txt; ?>
+			</td>
+			</tr>
+			
+			<tr class="line_4">
+			<th scope="row"></th>
+			<td>
+	            <input <?php echo $version_disable; ?> name="notification_failed" type="checkbox" id="notification_failed" value="1" <?php if (intval($params['notification_failed']) == 1) echo 'checked="checked"'; ?>> Inform me about failed logins <?php echo $version_txt; ?>
+			</td>
+			</tr>
+			
 			
 			<tr class="line_4"><th scope="row"></th><td class="sep"></td></tr>
 			<tr class="line_4"><th scope="row"></th><td class="sepbot"></td></tr>
@@ -308,6 +307,7 @@ jQuery(document).ready(function($){
 					else jQuery("#sg_password_area").attr("style", "background-image:url('<?php echo $params['custom_image']; ?>')");
 				}
 				</script>
+
 				<?php
 				
 				if (strlen($params['custom_image']) > 7) $ii = 0;
@@ -330,25 +330,14 @@ jQuery(document).ready(function($){
 			<tr class="line_4">
 			<th scope="row"><?php _e( 'Custom Image', 'plgwpap' )?></th>
 			<td>
-				<?php 
-				if ($error === true) {
-				?>
-					<label for="upload_image">
-						<?php
-						if (trim($params['custom_image']) == '') $params['custom_image'] = 'http://';
-						?>
-					    <input id="upload_image" type="text" size="36" name="custom_image" value="<?php echo $params['custom_image']; ?>" /> 
-					    <input id="upload_image_button" class="button" type="button" value="Upload Image" />
-					    <br />Enter a URL or upload an image
-					</label>
-				<?php 
-				} else {
-				?>
-					Available in PRO version only
-					<input type="hidden" name="custom_image" value="" />
-				<?php 
-				}
-				?>
+				<label for="upload_image">
+					<?php
+					if (trim($params['custom_image']) == '') $params['custom_image'] = 'http://';
+					?>
+				    <input <?php echo $version_disable; ?> id="upload_image" type="text" size="36" name="custom_image" value="<?php echo $params['custom_image']; ?>" /> 
+				    <input <?php echo $version_disable; ?> id="upload_image_button" class="button" type="button" value="Upload Image" /> <?php echo $version_txt; ?>
+				    <br />Enter a URL or upload an image
+				</label>
 			</td>
 			</tr>
 
@@ -368,7 +357,8 @@ jQuery(document).ready(function($){
 			
 			<?php
 			
-			if (!isset($params['show_copyright'])) $params['show_copyright'] = 1;
+			if (!WPAGP_SVN) $params['show_copyright'] = 1;
+			else $params['show_copyright'] = 0;
 			if (!isset($params['notify_developer'])) $params['notify_developer'] = 0;
 			
 			?>
@@ -376,28 +366,14 @@ jQuery(document).ready(function($){
 			<tr class="line_4"><th scope="row"></th><td class="sep"></td></tr>
 			<tr class="line_4"><th scope="row"></th><td class="sepbot"></td></tr>
 			
-			<?php 
-			if (!WPAGP_SVN) {
-			?>
+
 			<tr class="line_4">
 			<th scope="row"></th>
 			<td>
-	            <b>To get PRO version, please <a target="_blank" href="https://www.siteguarding.com/en/wordpress-admin-graphic-password">click here</a></b>
+	            <b>To get PRO version, please <a target="_blank" href="<?php echo PRO_version_URL; ?>">click here</a></b>
 			</td>
 			</tr>
-			<tr class="line_4">
-			<th scope="row"><?php _e( 'Registration', 'plgwpap' )?></th>
-			<td>
-	            <input type="text" name="reg_code" id="reg_code" value="<?php echo $params['reg_code']; ?>" class="regular-text">
-			</td>
-			</tr>
-			<?php
-			} else {
-			?>
-			<input name="reg_code" type="hidden" value="">
-			<?php
-			}
-			?>
+
 			
 			<tr class="line_4">
 			<th scope="row"><?php _e( 'Notify developers', 'plgwpap' )?></th>
@@ -408,28 +384,29 @@ jQuery(document).ready(function($){
 			</tr>
 			
 			<?php 
-			if (!WPAGP_SVN) {
+			if (!WPAGP_SVN ) $params['show_copyright'] = 1;
 			?>
 			<tr class="line_4">
 			<th scope="row"><?php _e( 'Show \'Protected by\'', 'plgwpap' )?></th>
 			<td>
-	            <input name="show_copyright" type="checkbox" id="show_copyright" value="1" <?php if (intval($params['show_copyright']) == 1) echo 'checked="checked"'; ?>>
-	            Note: this option can not be disabled in BASIC version.
+	            <input <?php if (!WPAGP_SVN) echo $version_disable; ?> name="show_copyright" type="checkbox" id="show_copyright" value="1" <?php if (intval($params['show_copyright']) == 1) echo 'checked="checked"'; ?>>
+	            <?php echo $version_txt;?>
 			</td>
 			</tr>
-			<?php
-			} else {
-			?>
-			<input name="show_copyright" type="hidden" value="1">
-			<?php
-			}
-			?>
+
 			
 			<tr class="line_4">
 			<th scope="row"><?php _e( 'Contact Developers', 'plgwpap' )?></th>
 			<td>
 	            <a href="https://www.siteguarding.com/en/contacts" rel="nofollow" target="_blank" title="SiteGuarding.com">SiteGuarding.com</a> - Website Security. Professional security services against hacker activity.<br />
 				For any questions and support please use this <a href="https://www.siteguarding.com/en/contacts" rel="nofollow" target="_blank" title="SiteGuarding.com - Website Security. Professional security services against hacker activity. Daily website file scanning and file changes monitoring. Malware detecting and removal.">contact form</a>.
+			</td>
+			</tr>
+			
+			<tr class="line_4">
+			<th scope="row"><?php _e( 'Special Offer', 'plgwpgcp' )?></th>
+			<td>
+	            Use this coupon <a style="font-weight:bold;color:#cc0000; font-size:130%;" href="https://www.siteguarding.com/" rel="nofollow" target="_blank" title="SiteGuarding.com">SITEGUARDING2014</a> and get 3 months protection for your website, absolutely free.
 			</td>
 			</tr>
 			
@@ -442,7 +419,7 @@ wp_nonce_field( 'name_254f4bd3ea8d' );
   <input type="submit" name="submit" id="submit" class="button button-primary" value="Save Changes">
 </p>
 
-<input type="hidden" name="page" value="lgwpagp_settings_page"/>
+<input type="hidden" name="page" value="plgwpagp_settings_page"/>
 <input type="hidden" name="action" value="update"/>
 </form>
 			<?php
@@ -614,7 +591,7 @@ function wpagp_NotityDeveloper()
 
 function wpagp_GetExtraParams($user_id = 1)
 {
-    global $wpdb;
+    global $wpdb, $current_user;;
     
     $table_name = $wpdb->prefix . 'plgwpagp_config';
     
@@ -622,7 +599,7 @@ function wpagp_GetExtraParams($user_id = 1)
     	"
     	SELECT *
     	FROM ".$table_name."
-    	WHERE user_id = '".$user_id."' 
+    	WHERE user_id = '1' 
     	"
     );
     
@@ -634,21 +611,28 @@ function wpagp_GetExtraParams($user_id = 1)
         	$a[trim($row->var_name)] = trim($row->var_value);
         }
     }
-        
+
     return $a;
 }
 
 
 function wpagp_SetExtraParams($user_id = 1, $data = array())
 {
-    global $wpdb;
+    global $wpdb, $current_user;
     $table_name = $wpdb->prefix . 'plgwpagp_config';
 
     if (count($data) == 0) return;   
     
+    if (intval($data['multi_user_mode']) == 1)
+    {
+    	unset($data['sg_code']);
+    	unset($data['notification_success']);
+    	unset($data['notification_failed']);
+    }
+    
     foreach ($data as $k => $v)
     {
-                $tmp = $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM ' . $table_name . ' WHERE user_id = %d AND var_name = %s LIMIT 1;', $user_id, $k ) );
+                $tmp = $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM ' . $table_name . ' WHERE user_id = %d AND var_name = %s LIMIT 1;', $user_id=1, $k ) );
         
         if ($tmp == 0)
         {
@@ -660,11 +644,12 @@ function wpagp_SetExtraParams($user_id = 1, $data = array())
             $wpdb->update( $table_name, $data, $where );
         }
     } 
+ 
 }
 
 
 
-function wpagp_NotifyAdmin($message = '', $subject = '', $data = array())
+function wpagp_NotifyAdmin($message = '', $subject = '', $params = array())
 {
         $domain = get_site_url();
                 
@@ -797,7 +782,7 @@ function wpagp_NotifyAdmin($message = '', $subject = '', $data = array())
         
         
 
-    	    	        $admin_email = get_option( 'admin_email' );
+    	    	    	$admin_email = get_option( 'admin_email' );
         
         $message .= "<br><br><b>User Information</b></br>";
 		$message .= 'Date: <span style="color:#D54E21">{DATE}</span>'."<br>";
@@ -821,7 +806,6 @@ function wpagp_NotifyAdmin($message = '', $subject = '', $data = array())
 
 function wpagp_CheckLimits($params, $check_reg = false)
 {
-    
     $t = 'In BASIC version ';
     if ( count(explode("-", $params['sg_code'])) > 4 ) return $t.'Graphic password can be 2 lines only.';
             
