@@ -4,7 +4,7 @@ Donate link: https://www.siteguarding.com/en/website-extensions
 Tags: admin protection, password, two-factor, authentication, security, login, login alerts, login security, login protection, security plugin, website security, admin security, protection, admin
 Requires at least: 3.0
 Tested up to: 3.8.1 
-Stable tag: 1.6
+Stable tag: 1.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -27,6 +27,7 @@ WP Admin Graphic Password is simple, but very powerful tool, what adds a higher 
 * Easy to install, easy to use.
 * Easy to remember your password with wide choice of the images. 
 * Multi user support.
+* Multi user role support (Possible to enable for Subscribers, Contributors, Authors, Editors)
 * Control notification types (successful and failed login actions)
 * Good solution if you access to your website from public places or infected computers. 
 * Prevent password brute force attack with strong "graphic password"
@@ -43,7 +44,7 @@ To protect your website against any hacker activity visit http://www.siteguardin
 3. Go to Menu `Settings` and find `Graphic Password` there
 4. Select the image for your graphic password, click on the cells to select the password
 5. Save the changes 
-3. Enjoy extra security
+6. Enjoy extra security
 
 > For any questions and support please visit https://www.siteguarding.com/en/contacts
 
@@ -64,7 +65,8 @@ A: Absolutely No.
 2. Select the graphic password by clicking on the cells.
 3. Your login page will have a new icon (lock).
 4. Click on lock to activate Graphic Password. Enter your login, password and graphic password to login as administrator.
-5. New features in PRO version
+5. New features in PRO version.
+6. Configuration page for Subscribers, Contributors, Authors, Editors.
 
 == Changelog ==
 == Upgrade Notice ==
