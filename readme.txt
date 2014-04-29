@@ -3,7 +3,7 @@ Contributors: SiteGuarding
 Donate link: https://www.siteguarding.com/en/website-extensions
 Tags: admin protection, password, two-factor, authentication, security, login, login alerts, login security, login protection, security plugin, website security, admin security, protection, admin
 Requires at least: 3.0
-Tested up to: 3.8.1 
+Tested up to: 3.9
 Stable tag: 1.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
