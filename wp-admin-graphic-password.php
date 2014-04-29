@@ -3,14 +3,12 @@
 Plugin Name: WP Admin Graphic Password (by SiteGuarding.com)
 Plugin URI: http://www.siteguarding.com/en/website-extensions
 Description: Adds Graphic Password field for admin login page and adds a higher level of security to your website.
-Version: 1.6
+Version: 1.7
 Author: SiteGuarding.com (SafetyBis Ltd.)
 Author URI: http://www.siteguarding.com
 License: GPLv2
 TextDomain: plgwpagp
 */
-
-
 define( 'WPAGP_SVN', true);
 define( 'PRO_version_URL', 'https://www.siteguarding.com/en/wordpress-admin-graphic-password');
 
@@ -264,14 +262,14 @@ function SG_CheckForm(form)
 			<tr class="line_4">
 			<th scope="row"><?php _e( 'Multi User Mode', 'plgwpap' )?></th>
 			<td>
-	            <input <?php echo $version_disable; ?> name="multi_user_mode" type="checkbox" id="multi_user_mode" value="1" <?php if (intval($params['multi_user_mode']) == 1) echo 'checked="checked"'; ?>> Every administrator can have own graphic password <?php echo $version_txt; ?>
+	            <input <?php echo $version_disable; ?> name="multi_user_mode" type="checkbox" id="multi_user_mode" value="1" <?php if (intval($params['multi_user_mode']) == 1) echo 'checked="checked"'; ?>> Every user account can have own graphic password <?php echo $version_txt; ?>
 			</td>
 			</tr>
 			
 			
 			<?php 
-			if (!WPAGP_SVN && $error === false) $params['notification_success'] = 1;
-			if (!WPAGP_SVN && $error === false) $params['notification_failed'] = 1;
+			if ($error === false) $params['notification_success'] = 1;
+			if ($error === false) $params['notification_failed'] = 1;
 			?>
 			<tr class="line_4">
 			<th scope="row"><?php _e( 'Notifications', 'plgwpap' )?></th>
@@ -284,6 +282,39 @@ function SG_CheckForm(form)
 			<th scope="row"></th>
 			<td>
 	            <input <?php echo $version_disable; ?> name="notification_failed" type="checkbox" id="notification_failed" value="1" <?php if (intval($params['notification_failed']) == 1) echo 'checked="checked"'; ?>> Inform me about failed logins <?php echo $version_txt; ?>
+			</td>
+			</tr>
+			
+			
+			
+			<tr class="line_4"><th scope="row"></th><td class="sep"></td></tr>
+			<tr class="line_4"><th scope="row"></th><td class="sepbot"></td></tr>
+			
+			<tr class="line_4">
+			<th scope="row"><?php _e( 'Enable for roles', 'plgwpap' )?></th>
+			<td>
+	            <input <?php echo $version_disable; ?> name="role_subscriber" type="checkbox" id="role_subscriber" value="1" <?php if (intval($params['role_subscriber']) == 1) echo 'checked="checked"'; ?>> Subscriber <?php echo $version_txt; ?>
+			</td>
+			</tr>
+			
+			<tr class="line_4">
+			<th scope="row"></th>
+			<td>
+	            <input <?php echo $version_disable; ?> name="role_contributor" type="checkbox" id="role_contributor" value="1" <?php if (intval($params['role_contributor']) == 1) echo 'checked="checked"'; ?>> Contributor <?php echo $version_txt; ?>
+			</td>
+			</tr>
+			
+			<tr class="line_4">
+			<th scope="row"></th>
+			<td>
+	            <input <?php echo $version_disable; ?> name="role_author" type="checkbox" id="role_author" value="1" <?php if (intval($params['role_author']) == 1) echo 'checked="checked"'; ?>> Author <?php echo $version_txt; ?>
+			</td>
+			</tr>
+			
+			<tr class="line_4">
+			<th scope="row"></th>
+			<td>
+	            <input <?php echo $version_disable; ?> name="role_editor" type="checkbox" id="role_editor" value="1" <?php if (intval($params['role_editor']) == 1) echo 'checked="checked"'; ?>> Editor <?php echo $version_txt; ?>
 			</td>
 			</tr>
 			
@@ -389,7 +420,7 @@ function SG_CheckForm(form)
 			<tr class="line_4">
 			<th scope="row"><?php _e( 'Show \'Protected by\'', 'plgwpap' )?></th>
 			<td>
-	            <input <?php if (!WPAGP_SVN) echo $version_disable; ?> name="show_copyright" type="checkbox" id="show_copyright" value="1" <?php if (intval($params['show_copyright']) == 1) echo 'checked="checked"'; ?>>
+	            <input <?php if (!WPAGP_SVN ) echo $version_disable; ?> name="show_copyright" type="checkbox" id="show_copyright" value="1" <?php if (intval($params['show_copyright']) == 1) echo 'checked="checked"'; ?>>
 	            <?php echo $version_txt;?>
 			</td>
 			</tr>
