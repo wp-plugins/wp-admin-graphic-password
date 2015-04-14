@@ -10,8 +10,7 @@ License: GPLv2
 TextDomain: plgwpagp
 */
 define( 'WPAGP_SVN', true);
-define( 'PRO_version_URL', 'https://www.siteguarding.com/en/wordpress-admin-graphic-password');
-
+define( 'PRO_version_URL',  'https://www.siteguarding.com/en/wordpress-admin-graphic-password');
 
 error_reporting(E_ERROR | E_WARNING);
 
