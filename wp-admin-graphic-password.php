@@ -10,7 +10,7 @@ License: GPLv2
 TextDomain: plgwpagp
 */
 define( 'WPAGP_SVN', true);
-define( 'PRO_version_URL', 'https://www.siteguarding.com/en/wordpress-admin-graphic-password');
+define( 'PRO_version_URL',  'https://www.siteguarding.com/en/wordpress-admin-graphic-password');
 
 
 error_reporting(E_ERROR | E_WARNING);
@@ -20,9 +20,9 @@ if( !is_admin() ) {
 	function plgwpagp_login_form_add_field()
 	{
 		global $wpdb;
-		
+
 		$domain = get_site_url();
-        
+
 		        $params = wpagp_GetExtraParams(1, false);
                 if (strlen(trim($params['sg_code'])) > 0)
         {
@@ -30,9 +30,9 @@ if( !is_admin() ) {
 	        if ($limits_flag !== true)
 	        {
 				echo '<p style="background-color: #FFEBE8; border: 1px solid #CC0000; padding:5px; margin: 5px 0">'.$limits_flag.' <b>Plugin is disabled.</b> For PRO version please <a target="_blank" href="'.PRO_version_URL.'">click here</a></p>';
-	
+
 	        }
-	        
+
 	        unset($params['sg_code']);
 	        	        ?>
 	        <style>.login_wide {width: 550px!important;}#loginform{position: relative!important;}</style>
@@ -42,12 +42,12 @@ if( !is_admin() ) {
 			{
 				var element_login = document.getElementById("login");
 				var sg_password_block = document.getElementById("sg_password_block");
-				
+
 				if (sg_a == 0) {SG_addClass("login_wide", element_login); sg_password_block.style.display="inline";}
 				if (sg_a == 1) {SG_removeClass("login_wide", element_login);  sg_password_block.style.display="none";}
 				sg_a = 1 - sg_a;
 			}
-			
+
 			function SG_addClass( classname, element ) {
 			    var cn = element.className;
 			    //test for existance
@@ -60,20 +60,20 @@ if( !is_admin() ) {
 			    }
 			    element.className = cn+classname;
 			}
-			
+
 			function SG_removeClass( classname, element ) {
 			    var cn = element.className;
 			    var rxp = new RegExp( "\\s?\\b"+classname+"\\b", "g" );
 			    cn = cn.replace( rxp, '' );
 			    element.className = cn;
 			}
-	
+
 			</script>
 			<a style="top: 2px; position: absolute; right: 2px;" href="javascript:;" onclick="SG_ShowImage()"><img width="32" height="32" src="data:image/png;base64,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"/></a>
 	        <div id="sg_password_block" style="display:none;">
 		        <?php
 		        SG_PrintCells($params);
-		        
+
 		        ?>
 		        <div style="clear: both;height:20px;"></div>
 	        </div>
@@ -82,8 +82,8 @@ if( !is_admin() ) {
         }
 	}
 	add_action( 'login_form', 'plgwpagp_login_form_add_field' );
-	
-	
+
+
 	function plgwpagp_login_head_add_field()
 	{
 
@@ -94,32 +94,32 @@ if( !is_admin() ) {
 			<div style="padding:3px 0;position: fixed;bottom:0;z-index:10;width:100%;text-align:center;background-color:#F1F1F1">Protected by <a href="http://www.siteguarding.com" rel="nofollow" target="_blank" title="SiteGuarding.com - Website Security. Professional security services against hacker activity. Daily website file scanning and file changes monitoring. Malware detecting and removal.">SiteGuarding.com</a></div>
 		<?php
 		}
-		
+
 	}
 	add_action( 'login_head', 'plgwpagp_login_head_add_field' );
-	
+
 
 	function plgwpagp_authenticate( $raw_user, $username )
 	{
         if (isset($raw_user->roles) && $raw_user->roles[0] == 'administrator')
         {
         	$params = wpagp_GetExtraParams(1, false);
-        	        	        	
+
 	        	        $limits_flag = wpagp_CheckLimits($params);
 	        if ($limits_flag === true)
 	        {
-				if ( trim($params['sg_code']) != trim($_POST['sg_code']) )	
+				if ( trim($params['sg_code']) != trim($_POST['sg_code']) )
 				{
 					if (intval($params['notification_failed']))
 					{
 						$message = '<span style="color:#D54E21">Someone has tried to login as <b>administrator</b> to '.get_site_url().' with the correct username and password, but wrong graphic password.</span><br><br>If it\'s not you, please change your password.';
 						wpagp_NotifyAdmin($message, 'Failed login', $params);
 					}
-		
+
 	    			add_action( 'login_head', 'wp_shake_js', 12 );
 	    			return new WP_Error( 'authentication_failed', __( '<strong>ERROR</strong>: Graphic Password is invalid.', 'plgwpagp' ) );
 				}
-				
+
 				if (intval($params['notification_success']))
 				{
 					$message = 'Administrator successfully has logged to '.get_site_url().'<br><br>If you didn\'t login, please change your password.';
@@ -131,20 +131,20 @@ if( !is_admin() ) {
         return $raw_user;
 	}
 	add_filter( 'authenticate', 'plgwpagp_authenticate', 999, 2 );
-    
 
-    
-}   
+
+
+}
 
 
 
 
 
 if( is_admin() ) {
-    
-    
+
+
 	add_action('admin_enqueue_scripts', 'plgwpagp_admin_scripts');
-	 
+
 	function plgwpagp_admin_scripts() {
 	    if (isset($_GET['page']) && $_GET['page'] == 'plgwpagp_settings_page') {
 	        wp_enqueue_media();
@@ -152,34 +152,34 @@ if( is_admin() ) {
 	}
 
 
-    
+
 	add_action('admin_menu', 'register_plgwpagp_settings_page');
 
 	function register_plgwpagp_settings_page() {
-		add_submenu_page( 'options-general.php', 'Graphic Password', 'Graphic Password', 'manage_options', 'plgwpagp_settings_page', 'plgwpagp_settings_page_callback' ); 
+		add_submenu_page( 'options-general.php', 'Graphic Password', 'Graphic Password', 'manage_options', 'plgwpagp_settings_page', 'plgwpagp_settings_page_callback' );
 	}
 
-	function plgwpagp_settings_page_callback() 
+	function plgwpagp_settings_page_callback()
 	{
 		$domain = get_site_url();
 		$image_url = plugins_url('images/', __FILE__);
-				
+
 		if (isset($_POST['action']) && $_POST['action'] == 'update' && check_admin_referer( 'name_254f4bd3ea8d' ))
 		{
 			if (isset($_POST['notify_developer'])) $notify_developer = intval($_POST['notify_developer']);
 			else $notify_developer = 0;
-			
+
 			$notify_developer_sent = intval($_POST['notify_developer_sent']);
 			if ($notify_developer && $notify_developer_sent == 0)
 			{
 				$notify_developer_sent = 1;
-				wpagp_NotityDeveloper();	
+				wpagp_NotityDeveloper();
 			}
-			
+
 			$notification_success = 1;
-			
+
 			$notification_failed = 1;
-			
+
 			$params = array(
 				'image_num' => $_POST['image_num'],
 				'custom_image' => trim($_POST['custom_image']),
@@ -190,16 +190,16 @@ if( is_admin() ) {
 				'notification_failed' => $_POST['notification_failed'],
 				'sg_code' => $_POST['sg_code']
 			);
-			
+
 			$error = wpagp_CheckLimits($params, true);
 			if ($error !== true && WPAGP_SVN !== true) $params['show_copyright'] = 1;
-			
+
 			wpagp_SetExtraParams(1, $params);
 			echo '<div id="setting-error-settings_updated" class="updated settings-error"><p><strong>Settings saved.</strong></p></div>';
 
 		}
 		else $params = wpagp_GetExtraParams(1);
-				
+
 		        $error = wpagp_CheckLimits($params);
         if ($error !== true)
         {
@@ -209,11 +209,11 @@ if( is_admin() ) {
                 alert('<?php echo $error; ?> Plugin will not work correct. Please get PRO version.');
             });
             </script>
-            
+
             <?php
         }
-		
-		
+
+
 		echo '<div class="wrap"><div id="icon-tools" class="icon32"></div>';
 			echo '<h2>Admin Graphic Password Settings</h2>';
 			?>
@@ -223,7 +223,7 @@ function SG_CheckForm(form)
 {
 	var v_el=document.getElementById("sg_code");
 	if (v_el.value == '') {
-		alert('Graphic password is not set.');	
+		alert('Graphic password is not set.');
 		return false;
 	} else return true;
 }
@@ -254,20 +254,20 @@ function SG_CheckForm(form)
 
 			</td>
 			</tr>
-			
+
 			<tr class="line_4"><th scope="row"></th><td class="sep"></td></tr>
 			<tr class="line_4"><th scope="row"></th><td class="sepbot"></td></tr>
-			
-			
+
+
 			<tr class="line_4">
 			<th scope="row"><?php _e( 'Multi User Mode', 'plgwpap' )?></th>
 			<td>
 	            <input <?php echo $version_disable; ?> name="multi_user_mode" type="checkbox" id="multi_user_mode" value="1" <?php if (intval($params['multi_user_mode']) == 1) echo 'checked="checked"'; ?>> Every user account can have own graphic password <?php echo $version_txt; ?>
 			</td>
 			</tr>
-			
-			
-			<?php 
+
+
+			<?php
 			if ($error === false) $params['notification_success'] = 1;
 			if ($error === false) $params['notification_failed'] = 1;
 			?>
@@ -277,52 +277,52 @@ function SG_CheckForm(form)
 	            <input <?php echo $version_disable; ?> name="notification_success" type="checkbox" id="notification_success" value="1" <?php if (intval($params['notification_success']) == 1) echo 'checked="checked"'; ?>> Inform me about successful logins <?php echo $version_txt; ?>
 			</td>
 			</tr>
-			
+
 			<tr class="line_4">
 			<th scope="row"></th>
 			<td>
 	            <input <?php echo $version_disable; ?> name="notification_failed" type="checkbox" id="notification_failed" value="1" <?php if (intval($params['notification_failed']) == 1) echo 'checked="checked"'; ?>> Inform me about failed logins <?php echo $version_txt; ?>
 			</td>
 			</tr>
-			
-			
-			
+
+
+
 			<tr class="line_4"><th scope="row"></th><td class="sep"></td></tr>
 			<tr class="line_4"><th scope="row"></th><td class="sepbot"></td></tr>
-			
+
 			<tr class="line_4">
 			<th scope="row"><?php _e( 'Enable for roles', 'plgwpap' )?></th>
 			<td>
 	            <input <?php echo $version_disable; ?> name="role_subscriber" type="checkbox" id="role_subscriber" value="1" <?php if (intval($params['role_subscriber']) == 1) echo 'checked="checked"'; ?>> Subscriber <?php echo $version_txt; ?>
 			</td>
 			</tr>
-			
+
 			<tr class="line_4">
 			<th scope="row"></th>
 			<td>
 	            <input <?php echo $version_disable; ?> name="role_contributor" type="checkbox" id="role_contributor" value="1" <?php if (intval($params['role_contributor']) == 1) echo 'checked="checked"'; ?>> Contributor <?php echo $version_txt; ?>
 			</td>
 			</tr>
-			
+
 			<tr class="line_4">
 			<th scope="row"></th>
 			<td>
 	            <input <?php echo $version_disable; ?> name="role_author" type="checkbox" id="role_author" value="1" <?php if (intval($params['role_author']) == 1) echo 'checked="checked"'; ?>> Author <?php echo $version_txt; ?>
 			</td>
 			</tr>
-			
+
 			<tr class="line_4">
 			<th scope="row"></th>
 			<td>
 	            <input <?php echo $version_disable; ?> name="role_editor" type="checkbox" id="role_editor" value="1" <?php if (intval($params['role_editor']) == 1) echo 'checked="checked"'; ?>> Editor <?php echo $version_txt; ?>
 			</td>
 			</tr>
-			
-			
+
+
 			<tr class="line_4"><th scope="row"></th><td class="sep"></td></tr>
 			<tr class="line_4"><th scope="row"></th><td class="sepbot"></td></tr>
-			
-			
+
+
 			<tr class="line_4">
 			<th scope="row"><?php _e( 'Select Image', 'plgwpap' )?></th>
 			<td>
@@ -333,17 +333,17 @@ function SG_CheckForm(form)
 					image_el.value = id;
 					jQuery(".img_thumb").removeClass('img_selected');
 					jQuery("#password_img_"+id).addClass('img_selected');
-					
+
 					if (id > 0) jQuery("#sg_password_area").attr("style", "background-image:url('<?php echo $image_url.'image';?>"+id+".jpg')");
 					else jQuery("#sg_password_area").attr("style", "background-image:url('<?php echo $params['custom_image']; ?>')");
 				}
 				</script>
 
 				<?php
-				
+
 				if (strlen($params['custom_image']) > 7) $ii = 0;
 				else $ii = 1;
-				
+
 				for ($i = $ii; $i <= 8; $i++)
 				{
 					if ($i > 0) $img_src = $image_url.'image'.$i.'.jpg';
@@ -356,7 +356,7 @@ function SG_CheckForm(form)
 	            <input type="hidden" name="image_num" id="image_num" value="<?php echo esc_attr($params['image_num']); ?>">
 			</td>
 			</tr>
-			
+
 
 			<tr class="line_4">
 			<th scope="row"><?php _e( 'Custom Image', 'plgwpap' )?></th>
@@ -365,14 +365,14 @@ function SG_CheckForm(form)
 					<?php
 					if (trim($params['custom_image']) == '') $params['custom_image'] = 'http://';
 					?>
-				    <input <?php echo $version_disable; ?> id="upload_image" type="text" size="36" name="custom_image" value="<?php echo $params['custom_image']; ?>" /> 
+				    <input <?php echo $version_disable; ?> id="upload_image" type="text" size="36" name="custom_image" value="<?php echo $params['custom_image']; ?>" />
 				    <input <?php echo $version_disable; ?> id="upload_image_button" class="button" type="button" value="Upload Image" /> <?php echo $version_txt; ?>
 				    <br />Enter a URL or upload an image
 				</label>
 			</td>
 			</tr>
 
-			
+
 			<tr class="line_4">
 			<th scope="row"></th>
 			<td>
@@ -382,21 +382,21 @@ function SG_CheckForm(form)
 			<p>Click the cells to select new graphic password</p>
 
 			<?php SG_PrintCells($params); ?>
-			
+
 			</td>
 			</tr>
-			
+
 			<?php
-			
+
 			if (!WPAGP_SVN) $params['show_copyright'] = 1;
 			else $params['show_copyright'] = 0;
 			if (!isset($params['notify_developer'])) $params['notify_developer'] = 0;
-			
+
 			?>
-			
+
 			<tr class="line_4"><th scope="row"></th><td class="sep"></td></tr>
 			<tr class="line_4"><th scope="row"></th><td class="sepbot"></td></tr>
-			
+
 
 			<tr class="line_4">
 			<th scope="row"></th>
@@ -405,7 +405,7 @@ function SG_CheckForm(form)
 			</td>
 			</tr>
 
-			
+
 			<tr class="line_4">
 			<th scope="row"><?php _e( 'Notify developers', 'plgwpap' )?></th>
 			<td>
@@ -413,8 +413,8 @@ function SG_CheckForm(form)
 	            <input name="notify_developer_sent" type="hidden" value="<?php echo intval($params['notify_developer_sent']); ?>">
 			</td>
 			</tr>
-			
-			<?php 
+
+			<?php
 			if (!WPAGP_SVN ) $params['show_copyright'] = 1;
 			?>
 			<tr class="line_4">
@@ -425,7 +425,7 @@ function SG_CheckForm(form)
 			</td>
 			</tr>
 
-			
+
 			<tr class="line_4">
 			<th scope="row"><?php _e( 'Contact Developers', 'plgwpap' )?></th>
 			<td>
@@ -433,19 +433,19 @@ function SG_CheckForm(form)
 				For any questions and support please use this <a href="https://www.siteguarding.com/en/contacts" rel="nofollow" target="_blank" title="SiteGuarding.com - Website Security. Professional security services against hacker activity. Daily website file scanning and file changes monitoring. Malware detecting and removal.">contact form</a>.
 			</td>
 			</tr>
-			
+
 			<tr class="line_4">
 			<th scope="row"><?php _e( 'Special Offer', 'plgwpgcp' )?></th>
 			<td>
 	            Use this coupon <a style="font-weight:bold;color:#cc0000; font-size:130%;" href="https://www.siteguarding.com/" rel="nofollow" target="_blank" title="SiteGuarding.com">SITEGUARDING2014</a> and get 3 months protection for your website, absolutely free.
 			</td>
 			</tr>
-			
+
 			</table>
 
 <?php
 wp_nonce_field( 'name_254f4bd3ea8d' );
-?>			
+?>
 <p class="submit">
   <input type="submit" name="submit" id="submit" class="button button-primary" value="Save Changes">
 </p>
@@ -454,14 +454,14 @@ wp_nonce_field( 'name_254f4bd3ea8d' );
 <input type="hidden" name="action" value="update"/>
 </form>
 			<?php
-			
+
 		echo '</div>';
-	
+
 	}
 
- 
- 
-    
+
+
+
 	function plgwpagp_activation()
 	{
 		global $wpdb;
@@ -475,10 +475,10 @@ wp_nonce_field( 'name_254f4bd3ea8d' );
                 PRIMARY KEY (`id`),
                 KEY `user_id` (`user_id`)
 			) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;';
-            
+
 
 			require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-			dbDelta( $sql );             
+			dbDelta( $sql );
             if (!WPAGP_SVN) wpagp_NotityDeveloper();
 		}
 
@@ -486,8 +486,8 @@ wp_nonce_field( 'name_254f4bd3ea8d' );
         wpagp_NotifyAdmin($message, 'WP Admin Graphic Protection configuration');
 	}
 	register_activation_hook( __FILE__, 'plgwpagp_activation' );
-    
-    
+
+
 	function plgwpagp_uninstall()
 	{
 		global $wpdb;
@@ -495,7 +495,7 @@ wp_nonce_field( 'name_254f4bd3ea8d' );
 		$wpdb->query( 'DROP TABLE ' . $table_name );
 	}
 	register_uninstall_hook( __FILE__, 'plgwpagp_uninstall' );
-	
+
 
 }
 
@@ -507,7 +507,7 @@ function SG_PrintCells($params)
 {
 	$domain = get_site_url();
 	$image_url = plugins_url('images/', __FILE__);
-	
+
 	?>
 	<style>
 	#sg_password_area{background-size:100%;width:500px;height:300px; background-image: url('<?php if (intval($params['image_num'])>0) echo $image_url.'image'.$params['image_num'].'.jpg'; else echo $params['custom_image'] ?>');position: relative;border: 1px solid #000;}
@@ -529,35 +529,35 @@ function SG_PrintCells($params)
 			if ($start_x >= $max_w)
 			{
 				$start_x = 0;
-				$start_y += $cell_h;	
-			}	
+				$start_y += $cell_h;
+			}
 		}
 	?>
 	</div>
-	
+
 	<script>
 	var sg_cell_h = <?php echo $cell_h; ?>;
 	var sg_cell_w = <?php echo $cell_w; ?>;
 	var sg_lineWidth = 40;
 	var sg_line_color = '#cc0000';
-	
+
 	var start_x = 0;
 	var start_y = 0;
 	var step_h = sg_cell_h / 2;
 	var step_w = sg_cell_w / 2;
 	var last_num = 0;
-	
+
 	function SG_DrawLine(el, num)
 	{
 		var v_el=document.getElementById("sg_code");
 		if (last_num == num) return;
-		
+
 		var c=document.getElementById("sg_canvas");
 		var ctx=c.getContext("2d");
-	
+
 		var x = el.offsetLeft;
 		var y = el.offsetTop;
-	
+
 		ctx.beginPath();
 		ctx.arc(x+step_w,y+step_h,sg_lineWidth/2,0,2*Math.PI, false);
 		ctx.fillStyle = sg_line_color;
@@ -565,7 +565,7 @@ function SG_PrintCells($params)
 		ctx.lineWidth = 1;
 		ctx.strokeStyle=sg_line_color;
 		ctx.stroke();
-		
+
 		//alert(x+'='+y);
 		if (start_x > 0 || start_y > 0)
 		{
@@ -577,28 +577,28 @@ function SG_PrintCells($params)
 			ctx.stroke();
 		}
 		else v_el.value = '';
-		
+
 		start_x = x+step_w;
 		start_y = y+step_h;
-		
+
 		v_el.value = v_el.value + num + "-";
 		last_num = num;
 	}
-	
+
 	function SG_Refresh()
 	{
 		var v_el=document.getElementById("sg_code");
 		var c=document.getElementById("sg_canvas");
 		var ctx=c.getContext("2d");
-		ctx.clearRect(0, 0, c.width, c.height);	
+		ctx.clearRect(0, 0, c.width, c.height);
 		start_x = start_y = last_num = 0;
 		v_el.value = '';
 	}
-	
+
 	</script>
 	<p><a style="margin-top:5px" class="button" href="javascript:;" onclick="SG_Refresh()">Clear</a></p>
 	<input type="hidden" value="<?php echo esc_attr($params['sg_code']); ?>" name="sg_code" id="sg_code"/>
-	
+
 	<?php
 }
 
@@ -606,7 +606,7 @@ function SG_PrintCells($params)
 function wpagp_NotityDeveloper()
 {
 	    $link = 'http://www.siteguarding.com/_advert.php?action=inform&type=json&text=';
-    
+
     $domain = get_site_url();
     $email = get_option( 'admin_email' );
     $data = array(
@@ -623,21 +623,21 @@ function wpagp_NotityDeveloper()
 function wpagp_GetExtraParams($user_id = 1)
 {
     global $wpdb, $current_user;;
-    
+
     $table_name = $wpdb->prefix . 'plgwpagp_config';
-    
-    $rows = $wpdb->get_results( 
+
+    $rows = $wpdb->get_results(
     	"
     	SELECT *
     	FROM ".$table_name."
-    	WHERE user_id = '1' 
+    	WHERE user_id = '1'
     	"
     );
-    
+
     $a = array();
     if (count($rows))
     {
-        foreach ( $rows as $row ) 
+        foreach ( $rows as $row )
         {
         	$a[trim($row->var_name)] = trim($row->var_value);
         }
@@ -652,30 +652,30 @@ function wpagp_SetExtraParams($user_id = 1, $data = array())
     global $wpdb, $current_user;
     $table_name = $wpdb->prefix . 'plgwpagp_config';
 
-    if (count($data) == 0) return;   
-    
+    if (count($data) == 0) return;
+
     if (intval($data['multi_user_mode']) == 1)
     {
     	unset($data['sg_code']);
     	unset($data['notification_success']);
     	unset($data['notification_failed']);
     }
-    
+
     foreach ($data as $k => $v)
     {
                 $tmp = $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM ' . $table_name . ' WHERE user_id = %d AND var_name = %s LIMIT 1;', $user_id=1, $k ) );
-        
+
         if ($tmp == 0)
         {
-                        $wpdb->insert( $table_name, array( 'user_id' => $user_id, 'var_name' => $k, 'var_value' => $v ) ); 
+                        $wpdb->insert( $table_name, array( 'user_id' => $user_id, 'var_name' => $k, 'var_value' => $v ) );
         }
         else {
                         $data = array('var_value'=>$v);
             $where = array('user_id' => $user_id, 'var_name' => $k);
             $wpdb->update( $table_name, $data, $where );
         }
-    } 
- 
+    }
+
 }
 
 
@@ -683,7 +683,7 @@ function wpagp_SetExtraParams($user_id = 1, $data = array())
 function wpagp_NotifyAdmin($message = '', $subject = '', $params = array())
 {
         $domain = get_site_url();
-                
+
         $body_message = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -710,7 +710,7 @@ function wpagp_NotifyAdmin($message = '', $subject = '', $params = array())
                   <td width="15"></td>
                   <td width="1" bgcolor="#656565"></td>
                   <td width="15"></td>
-                  <td style="font-family:Arial, Helvetica, sans-serif; font-size:11px;"><a href="http://www.siteguarding.com/en/what-to-do-if-your-website-has-been-hacked" target="_blank" style="color:#656565; text-decoration: none;">Security Tips</a></td>            
+                  <td style="font-family:Arial, Helvetica, sans-serif; font-size:11px;"><a href="http://www.siteguarding.com/en/what-to-do-if-your-website-has-been-hacked" target="_blank" style="color:#656565; text-decoration: none;">Security Tips</a></td>
                   <td width="15"></td>
                   <td width="1" bgcolor="#656565"></td>
                   <td width="15"></td>
@@ -810,11 +810,11 @@ function wpagp_NotifyAdmin($message = '', $subject = '', $params = array())
 </body>
 </html>
 ';
-        
-        
+
+
 
     	    	    	$admin_email = get_option( 'admin_email' );
-        
+
         $message .= "<br><br><b>User Information</b></br>";
 		$message .= 'Date: <span style="color:#D54E21">{DATE}</span>'."<br>";
 		$message .= "IP Address: {IP}<br>";
@@ -824,24 +824,24 @@ function wpagp_NotifyAdmin($message = '', $subject = '', $params = array())
 
         $a = array("{IP}", "{DATE}", "{BROWSER}");
         $b = array($_SERVER['REMOTE_ADDR'], date("Y-m-d H:i:s"), $_SERVER['HTTP_USER_AGENT']);
-        
-        $txt = str_replace($a, $b, $txt); 
-        
+
+        $txt = str_replace($a, $b, $txt);
+
         $body_message = str_replace("{MESSAGE_CONTENT}", $txt, $body_message);
 
         $subject = $subject.' to '.get_site_url().' (protected by SiteGuarding.com)';
-        $headers = 'content-type: text/html';  
-        
+        $headers = 'content-type: text/html';
+
     	@wp_mail( $admin_email, $subject, $body_message, $headers );
-    }	
+    }
 
 function wpagp_CheckLimits($params, $check_reg = false)
 {
     $t = 'In BASIC version ';
     if ( count(explode("-", $params['sg_code'])) > 4 ) return $t.'Graphic password can be 2 lines only.';
-            
+
     if ($check_reg) return false;
-    
+
     return true;
 }
 
